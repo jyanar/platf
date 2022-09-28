@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -10,7 +11,16 @@ type Pos struct {
 	X, Y float64
 }
 
+type PosObj interface {
+	setIdx(idx int)
+	getIdx() int
+	getPosition() (float64, float64)
+	setPosition(X, Y float64)
+	getPosAndSize() (float64, float64, int, int)
+}
+
 type Game struct {
+	World
 	Player
 	Level
 }
@@ -30,8 +40,16 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 }
 
 func (g *Game) init() {
-	g.Player.init()
+	g.World.init()
+	g.Player.init(10, 10, &g.World)
 	g.Level.init()
+	g.World.add(&g.Player)
+	for _, t := range g.Level.tiles {
+		g.World.add(&t)
+	}
+	for i, t := range g.World.items {
+		fmt.Printf("%v %v\n", i, t.getIdx())
+	}
 }
 
 func NewGame() *Game {
