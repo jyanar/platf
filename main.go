@@ -44,8 +44,8 @@ func (g *Game) init() {
 	g.Player.init(10, 10, &g.World)
 	g.Level.init()
 	g.World.add(&g.Player)
-	for _, t := range g.Level.tiles {
-		g.World.add(&t)
+	for i := 0; i < len(g.Level.tiles); i++ {
+		g.World.add(&g.Level.tiles[i])
 	}
 	for i, t := range g.World.items {
 		fmt.Printf("%v %v\n", i, t.getIdx())

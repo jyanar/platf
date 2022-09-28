@@ -17,8 +17,7 @@ func (w *World) add(item PosObj) {
 func (w *World) checkCollisions(a, b PosObj) bool {
 	aX, aY, aW, aH := a.getPosAndSize()
 	bX, bY, bW, bH := b.getPosAndSize()
-	return aX < bX+float64(bW) && aX+float64(aW) > bX &&
-		aY < bY+float64(bH) && float64(aH)+aY > bY
+	return aX < bX+float64(bW) && aX+float64(aW) > bX && aY < bY+float64(bH) && float64(aH)+aY > bY
 }
 
 func (w *World) move(item PosObj, newX float64, newY float64) {
@@ -27,7 +26,7 @@ func (w *World) move(item PosObj, newX float64, newY float64) {
 	for _, i := range w.items {
 		if i != item && w.checkCollisions(item, i) {
 			item.setPosition(prevX, prevY)
-			return
+			break
 		}
 	}
 }
