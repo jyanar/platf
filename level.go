@@ -30,24 +30,19 @@ func (l *Level) init() {
 	}
 	for i := 0; i < len(l.data); i++ {
 		if l.data[i] > 0 {
-			t := Tile{
-				Pos{X: float64((i % l.width) * TILESIZE),
-					Y: math.Floor(float64(i/l.width)) * TILESIZE},
-				TILESIZE,
-				TILESIZE,
-			}
+			t := Tile{Obj{
+				x: float64(float64(i%l.width) * TILESIZE),
+				y: float64(math.Floor(float64(i/l.width)) * TILESIZE),
+				w: float64(TILESIZE),
+				h: float64(TILESIZE),
+			}}
 			l.tiles = append(l.tiles, t)
 		}
 	}
 }
 
-// func init() {
-// 	fmt.Println(l.tiles)
-// }
-
 func (l *Level) Draw(screen *ebiten.Image) {
 	for _, t := range l.tiles {
-		// ebitenutil.DrawLine(screen, float64(t.x), float64(t.y), float64(t.x + t.w), float64(t.y + t.h), image.White)
-		ebitenutil.DrawRect(screen, float64(t.X), float64(t.Y), float64(t.w), float64(t.h), image.White)
+		ebitenutil.DrawRect(screen, t.x, t.y, t.w, t.h, image.White)
 	}
 }

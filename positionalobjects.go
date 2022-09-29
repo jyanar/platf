@@ -1,33 +1,32 @@
 package main
 
-type Pos struct {
-	X, Y float64
+type Obj struct {
+	x, y, w, h float64
 }
 
 type PosObj interface {
 	getPosition() (float64, float64)
-	setPosition(X, Y float64)
-	getPosAndSize() (float64, float64, int, int)
+	setPosition(x, y float64)
+	getPosAndSize() (float64, float64, float64, float64)
 }
 
-type IObj struct {
-	Pos
-	w, h int
+// type IObj struct {
+// 	Obj
+// }
+
+// func (i IObj) init(X float64, Y float64, w int, h int) IObj {
+// 	return IObj{Pos{X, Y}, w, h}
+// }
+
+func (o *Obj) setPosition(x, y float64) {
+	o.x = x
+	o.y = y
 }
 
-func (i IObj) init(X float64, Y float64, w int, h int) IObj {
-	return IObj{Pos{X, Y}, w, h}
+func (o Obj) getPosition() (float64, float64) {
+	return o.x, o.y
 }
 
-func (i *IObj) setPosition(X, Y float64) {
-	i.X = X
-	i.Y = Y
-}
-
-func (i IObj) getPosition() (float64, float64) {
-	return i.X, i.Y
-}
-
-func (i IObj) getPosAndSize() (float64, float64, int, int) {
-	return i.X, i.Y, i.w, i.h
+func (o Obj) getPosAndSize() (float64, float64, float64, float64) {
+	return o.x, o.y, o.w, o.h
 }

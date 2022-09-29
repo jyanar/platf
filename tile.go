@@ -1,19 +1,18 @@
 package main
 
 type Tile struct {
-	Pos
-	w, h int
+	Obj
 }
 
 func (t Tile) getPosition() (float64, float64) {
-	return t.X, t.Y
+	return t.x, t.y
 }
 
-func (t *Tile) setPosition(X, Y float64) {
-	t.X = X
-	t.Y = Y
+func (t *Tile) setPosition(x, y float64) {
+	t.x = x
+	t.y = y
 }
 
-func (t Tile) getPosAndSize() (float64, float64, int, int) {
-	return t.Pos.X, t.Pos.Y, t.w, t.h
+func (t Tile) getPosAndSize() (float64, float64, float64, float64) {
+	return t.x, t.y, t.w, t.h
 }

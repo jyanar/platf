@@ -7,6 +7,6 @@ const (
 )
 
 const (
-	GRAVITY    = 40 * DT
+	GRAVITY    = 40
 	JUMP_SPEED = -8
 )
