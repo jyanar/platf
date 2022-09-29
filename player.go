@@ -2,6 +2,7 @@ package main
 
 import (
 	"image"
+	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -9,17 +10,10 @@ import (
 
 type Player struct {
 	Pos
-	world     *World
-	idx, w, h int
-	speed     float64
-}
-
-func (p *Player) setIdx(idx int) {
-	p.idx = idx
-}
-
-func (p Player) getIdx() int {
-	return p.idx
+	world *World
+	w, h  int
+	vy    float64
+	speed float64
 }
 
 func (p *Player) setPosition(X, Y float64) {
@@ -41,24 +35,30 @@ func (p *Player) init(X float64, Y float64, w *World) {
 	p.world = w
 	p.w = TILESIZE
 	p.h = TILESIZE
+	p.vy = 0
 	p.speed = 3
 }
 
+func (p Player) isGrounded() bool {
+	return p.world.isPlayerGrounded(p)
+}
+
 func (p *Player) Update() error {
-	dx, dy := 0.0, 0.0
-	if ebiten.IsKeyPressed(ebiten.KeyArrowDown) {
-		dy += p.speed
-	}
-	if ebiten.IsKeyPressed(ebiten.KeyArrowUp) {
-		dy -= p.speed
+	dx := 0.0
+	if ebiten.IsKeyPressed(ebiten.KeyArrowUp) && p.isGrounded() {
+		p.vy = JUMP_SPEED
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
-		dx -= p.speed
+		dx = dx - p.speed
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
-		dx += p.speed
+		dx = dx + p.speed
 	}
-	p.world.move(p, p.X+dx, p.Y+dy)
+	p.world.move(p, p.X+dx, p.Y+p.vy)
+	p.vy = math.Min(p.vy+GRAVITY, 12)
+	if p.isGrounded() {
+		p.vy = 0
+	}
 	return nil
 }
 

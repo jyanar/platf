@@ -33,7 +33,6 @@ func (l *Level) init() {
 			t := Tile{
 				Pos{X: float64((i % l.width) * TILESIZE),
 					Y: math.Floor(float64(i/l.width)) * TILESIZE},
-				0,
 				TILESIZE,
 				TILESIZE,
 			}
