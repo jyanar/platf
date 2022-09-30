@@ -1,5 +1,12 @@
 package main
 
+import (
+	"image"
+
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+)
+
 type Tile struct {
 	Obj
 }
@@ -16,3 +23,10 @@ func (t *Tile) setPosition(x, y float64) {
 func (t Tile) getPosAndSize() (float64, float64, float64, float64) {
 	return t.x, t.y, t.w, t.h
 }
+
+func (t Tile) Update() error { return nil }
+
+func (t Tile) Draw(screen *ebiten.Image) {
+	ebitenutil.DrawRect(screen, t.x, t.y, t.w, t.h, image.White)
+}
+

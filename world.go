@@ -1,5 +1,7 @@
 package main
 
+import "github.com/hajimehoshi/ebiten/v2"
+
 // World is a colletion of objects with positional data
 type World struct {
 	items []PosObj
@@ -71,5 +73,18 @@ func (w *World) move(item PosObj, newX float64, newY float64) {
 			newY = newY + height // item is moving right
 		}
 		item.setPosition(newX, newY)
+	}
+}
+
+func (w *World) Update() error {
+	for _, item := range w.items {
+		item.Update()
+	}
+	return nil
+}
+
+func (w World) Draw(screen *ebiten.Image) {
+	for _, item := range w.items {
+		item.Draw(screen)
 	}
 }

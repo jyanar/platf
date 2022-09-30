@@ -15,13 +15,15 @@ type Game struct {
 }
 
 func (g *Game) Update() error {
-	g.Player.Update()
+	// g.Player.Update()
+	g.World.Update()
 	return nil
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	g.Player.Draw(screen)
-	g.Level.Draw(screen)
+	// g.Player.Draw(screen)
+	// g.Level.Draw(screen)
+	g.World.Draw(screen)
 	ebitenutil.DebugPrint(screen, fmt.Sprintf("TPS: %0.2f\nFPS: %0.2f", ebiten.ActualTPS(), ebiten.ActualFPS()))
 }
 
@@ -31,12 +33,13 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 
 func (g *Game) init() {
 	g.World.init()
-	g.Player.init(10, 10, &g.World)
-	g.Level.init()
-	g.World.add(&g.Player)
-	for i := 0; i < len(g.Level.tiles); i++ {
-		g.World.add(&g.Level.tiles[i])
-	}
+	g.Level.init(&g.World)
+	// g.Player.init(10, 10, &g.World)
+	// g.Level.init()
+	// g.World.add(&g.Player)
+	// for i := 0; i < len(g.Level.tiles); i++ {
+	// 	g.World.add(&g.Level.tiles[i])
+	// }
 }
 
 func NewGame() *Game {
