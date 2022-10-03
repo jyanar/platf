@@ -11,7 +11,6 @@ func main() {
 	ebiten.SetWindowTitle("platf")
 	sm := &StateManager{}
 	sm.push(&PlayState{})
-	// sm.setCurrent(&PlayState{})
 	if err := ebiten.RunGame(sm); err != nil {
 		log.Fatal(err)
 	}
