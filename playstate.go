@@ -18,7 +18,8 @@ type PlayState struct {
 func (s *PlayState) Update() error {
 	s.World.Update()
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		s.sm.setCurrent(&PauseState{})
+		s.sm.push(&PauseState{})
+		// s.sm.setCurrent(&PauseState{})
 	}
 	return nil
 }

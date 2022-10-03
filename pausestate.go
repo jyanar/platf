@@ -12,7 +12,7 @@ type PauseState struct {
 
 func (s *PauseState) Update() error {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		s.sm.setCurrent(&PlayState{})
+		s.sm.pop()
 	}
 	return nil
 }

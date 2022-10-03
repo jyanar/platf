@@ -9,18 +9,20 @@ type State interface {
 }
 
 type StateManager struct {
-	current State
+	states []State
+	curidx int
+	// fromidx int
 }
 
 func (sm *StateManager) Update() error {
-	if res := sm.current.Update(); res != nil {
+	if res := sm.states[sm.curidx].Update(); res != nil {
 		return res
 	}
 	return nil
 }
 
 func (sm *StateManager) Draw(screen *ebiten.Image) {
-	sm.current.Draw(screen)
+	sm.states[sm.curidx].Draw(screen)
 }
 
 func (sm *StateManager) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
@@ -28,10 +30,27 @@ func (sm *StateManager) Layout(outsideWidth, outsideHeight int) (screenWidth, sc
 }
 
 func (sm StateManager) getCurrent() State {
-	return sm.current
+	return sm.states[sm.curidx]
 }
 
-func (sm *StateManager) setCurrent(state State) {
-	sm.current = state
-	sm.current.initState(sm)
+func (sm *StateManager) push(state State) {
+	sm.states = append(sm.states, state)
+	sm.curidx = len(sm.states) - 1
+	sm.states[sm.curidx].initState(sm)
 }
+
+func (sm *StateManager) pop() {
+	sm.curidx = len(sm.states) - 2
+	sm.states = sm.states[:len(sm.states)-1] // discard last state
+}
+
+// func (sm *StateManager) setCurrent(idx int) {
+// 	sm.fromidx = sm.curidx
+// 	sm.curidx = idx
+// }
+
+// func (sm *StateManager) returnToPrevious() {
+// 	tmp := sm.curidx
+// 	sm.curidx = sm.fromidx
+// 	sm.fromidx = tmp
+// }
