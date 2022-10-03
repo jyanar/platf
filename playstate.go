@@ -19,7 +19,6 @@ func (s *PlayState) Update() error {
 	s.World.Update()
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		s.sm.push(&PauseState{})
-		// s.sm.setCurrent(&PauseState{})
 	}
 	return nil
 }
@@ -38,3 +37,5 @@ func (s *PlayState) initState(sm *StateManager) {
 	s.Level.init(&s.World)
 	s.sm = sm
 }
+
+// func (s *PlayState) trigger(event, actor, data)
