@@ -11,6 +11,10 @@ type ToggleFloor struct {
 	Obj
 }
 
+func NewToggleFloor(obj Obj) *ToggleFloor {
+	return &ToggleFloor{obj}
+}
+
 func (t ToggleFloor) Update() error { return nil }
 
 func (t ToggleFloor) Draw(screen *ebiten.Image) {

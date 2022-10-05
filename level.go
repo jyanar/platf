@@ -7,71 +7,64 @@ import (
 type Level struct {
 	width int
 	data  []int
-	// tiles []Tile
+	world *World
 }
 
-func (l *Level) init(world *World) {
-	m := map[int]string{
-		1: "Tile",
-		2: "ToggleFloor",
-		5: "Spikes",
-		6: "Lever",
-		9: "Player",
-	}
-
-	l.width = 16
-	l.data = []int{
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		9, 0, 0, 6, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0,
-		1, 1, 1, 1, 1, 1, 1, 1, 5, 1, 1, 1, 5, 5, 1, 1,
-	}
+func NewLevel(width int, data []int, world *World, player *Player) *Level {
+	l := &Level{}
+	l.width = width
+	l.data = data
+	l.world = world
 	for i := 0; i < len(l.data); i++ {
-		x, y := float64((i % l.width) * TILESIZE),  math.Floor(float64(i)/float64(l.width)) * TILESIZE
-		obj  := Obj{x: x, y: y, w: float64(TILESIZE), h: float64(TILESIZE)}
-		switch m[l.data[i]] {
+		x, y := float64((i%l.width)*TILESIZE), math.Floor(float64(i)/float64(l.width))*TILESIZE
+		obj := Obj{x: x, y: y, w: float64(TILESIZE), h: float64(TILESIZE)}
+		switch TILETYPES[l.data[i]] {
 		case "Tile":
-			world.add(&Tile{obj})
+			l.world.add(NewTile(obj))
 
 		case "ToggleFloor":
-			world.add(&ToggleFloor{obj})
+			l.world.add(NewToggleFloor(obj))
 
 		case "Spikes":
-			world.add(&Spikes{obj})
+			l.world.add(NewSpikes(obj))
 
 		case "Lever":
-			world.add(&Lever{obj})
+			l.world.add(NewLever(obj))
 
 		case "Player":
-			world.add(&Player{obj, world, 0, 220})
+			l.world.add(NewPlayer(obj, world, 0, 220, true))
 		}
-
-		// if l.data[i] > 0 {
-		// 	t := Tile{Obj{
-		// 		x: float64(float64(i%l.width) * TILESIZE),
-		// 		y: float64(math.Floor(float64(i/l.width)) * TILESIZE),
-		// 		w: float64(TILESIZE),
-		// 		h: float64(TILESIZE),
-		// 	}}
-		// 	l.tiles = append(l.tiles, t)
-		// }
 	}
+	return l
 }
 
-// func (l *Level) Draw(screen *ebiten.Image) {
-// 	for _, t := range l.tiles {
-// 		ebitenutil.DrawRect(screen, t.x, t.y, t.w, t.h, image.White)
-// 	}
-// }
+func (l *Level) init(width int, data []int, world *World, player *Player) {
+	l.width = width
+	l.data = data
+	l.world = world
+	for i := 0; i < len(l.data); i++ {
+		x, y := float64((i%l.width)*TILESIZE), math.Floor(float64(i)/float64(l.width))*TILESIZE
+		obj := Obj{x: x, y: y, w: float64(TILESIZE), h: float64(TILESIZE)}
+		switch TILETYPES[l.data[i]] {
+		case "Tile":
+			l.world.add(NewTile(obj))
+
+		case "ToggleFloor":
+			l.world.add(NewToggleFloor(obj))
+
+		case "Spikes":
+			l.world.add(NewSpikes(obj))
+
+		case "Lever":
+			l.world.add(NewLever(obj))
+
+		case "Player":
+			player.Obj = obj
+			player.world = world
+			player.vy = 0
+			player.speed = 220
+			player.alive = true
+			l.world.add(player)
+		}
+	}
+}

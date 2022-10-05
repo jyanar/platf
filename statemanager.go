@@ -11,7 +11,6 @@ type State interface {
 type StateManager struct {
 	states []State
 	curidx int
-	// fromidx int
 }
 
 func (sm *StateManager) Update() error {

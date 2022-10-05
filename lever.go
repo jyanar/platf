@@ -11,6 +11,10 @@ type Lever struct {
 	Obj
 }
 
+func NewLever(obj Obj) *Lever {
+	return &Lever{obj}
+}
+
 func (l Lever) Update() error { return nil }
 
 func (l Lever) Draw(screen *ebiten.Image) {

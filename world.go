@@ -1,10 +1,14 @@
 package main
 
-import "github.com/hajimehoshi/ebiten/v2"
-
 // World is a colletion of objects with positional data
 type World struct {
 	items []PosObj
+}
+
+func NewWorld() *World {
+	w := &World{}
+	w.items = []PosObj{}
+	return w
 }
 
 func (w *World) init() {
@@ -18,24 +22,24 @@ func (w *World) add(item PosObj) {
 func (w World) areOverlapping(a, b PosObj) bool {
 	aX, aY, aW, aH := a.getPosAndSize()
 	bX, bY, bW, bH := b.getPosAndSize()
-	return aX < bX + bW && // aX is less than b+width
-		   aX + aW > bX && // a+width is greater than bX
-		   aY < bY + bH && // a is less than b+height
-		   aH + aY > bY    // but, a+height is greater than b
+	return aX < bX+bW && // aX is less than b+width
+		   aX+aW > bX && // a+width is greater than bX
+		   aY < bY+bH && // a is less than b+height
+		   aH+aY > bY    // but, a+height is greater than b
 }
 
 func (w World) computeOverlap(a, b PosObj) (width float64, height float64) {
 	ax, ay, aw, ah := a.getPosAndSize()
 	bx, by, bw, bh := b.getPosAndSize()
 	if ax+aw > bx+bw {
-		width = bx+bw - ax
+		width = bx + bw - ax
 	} else {
-		width = ax+bw - bx
+		width = ax + bw - bx
 	}
 	if ay+ah > by+bh {
-		height = by+bh - ay
+		height = by + bh - ay
 	} else {
-		height = ay+ah - by
+		height = ay + ah - by
 	}
 	return width, height
 }
@@ -76,15 +80,24 @@ func (w *World) move(item PosObj, newX float64, newY float64) {
 	}
 }
 
-func (w *World) Update() error {
-	for _, item := range w.items {
-		item.Update()
-	}
-	return nil
-}
+// func (w *World) Update() error {
+// 	for _, item := range w.items {
+// 		item.Update()
+// 	}
+// 	return nil
+// }
 
-func (w World) Draw(screen *ebiten.Image) {
-	for _, item := range w.items {
-		item.Draw(screen)
-	}
-}
+// func (w World) Draw(screen *ebiten.Image) {
+// 	for _, item := range w.items {
+// 		item.Draw(screen)
+// 	}
+// }
+
+// func (w World) getPlayer() *Player {
+// 	for _, item := range w.items {
+// 		if typeof(item) == "*main.Player" {
+// 			return &item
+// 		}
+// 	}
+// 	return &Player{}
+// }
