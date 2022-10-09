@@ -14,7 +14,7 @@ type PlayScene struct {
 	Level
 }
 
-func NewPlayState(w World, p Player, l Level) *PlayScene {
+func NewPlayScene(w World, p Player, l Level) *PlayScene {
 	s := &PlayScene{}
 	s.World = w
 	s.Player = p
@@ -23,15 +23,17 @@ func NewPlayState(w World, p Player, l Level) *PlayScene {
 }
 
 func (s *PlayScene) Update(state *GameState) error {
+	// Handle input
+	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+		state.SceneManager.push(&PauseScene{})
+	}
+	// Update world
 	for _, item := range s.World.items {
 		item.Update()
 	}
+	// Check player status
 	if !s.Player.alive {
 		state.SceneManager.push(&DeadScene{})
-	}
-
-	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		state.SceneManager.push(&PauseScene{})
 	}
 	return nil
 }
