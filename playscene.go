@@ -9,14 +9,14 @@ import (
 )
 
 type PlayScene struct {
-	World
+	Collisions
 	Player
 	Level
 }
 
-func NewPlayScene(w World, p Player, l Level) *PlayScene {
+func NewPlayScene(w Collisions, p Player, l Level) *PlayScene {
 	s := &PlayScene{}
-	s.World = w
+	s.Collisions = w
 	s.Player = p
 	s.Level = l
 	return s
@@ -27,8 +27,8 @@ func (s *PlayScene) Update(state *GameState) error {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		state.SceneManager.push(&PauseScene{})
 	}
-	// Update world
-	for _, item := range s.World.items {
+	// Update collisions
+	for _, item := range s.Collisions.items {
 		item.Update()
 	}
 	// Check player status
@@ -39,7 +39,7 @@ func (s *PlayScene) Update(state *GameState) error {
 }
 
 func (s *PlayScene) Draw(screen *ebiten.Image) {
-	for _, item := range s.World.items {
+	for _, item := range s.Collisions.items {
 		item.Draw(screen)
 	}
 	ebitenutil.DebugPrint(screen, fmt.Sprintf("TPS: %0.2f\nFPS: %0.2f", ebiten.ActualTPS(), ebiten.ActualFPS()))
@@ -51,6 +51,6 @@ func (s *PlayScene) Layout(outsideWidth, outsideHeight int) (screenWidth, screen
 
 func (s *PlayScene) init() {
 	s.Player = Player{}
-	s.World.init()
-	s.Level.init(16, map1, &s.World, &s.Player)
+	s.Collisions = Collisions{}
+	s.Level.init(16, map1, &s.Collisions, &s.Player)
 }

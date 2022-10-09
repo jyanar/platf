@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"image"
 	"math"
 
@@ -11,19 +10,19 @@ import (
 
 type Player struct {
 	Obj
-	world *World
+	*Collisions
 	vy    float64
 	speed float64
 	alive bool
 }
 
-func NewPlayer(obj Obj, w *World, vy float64, speed float64, alive bool) *Player {
+func NewPlayer(obj Obj, c *Collisions, vy float64, speed float64, alive bool) *Player {
 	return &Player{
-		Obj:   obj,
-		world: w,
-		vy:    0,
-		speed: 220,
-		alive: true,
+		Obj:        obj,
+		Collisions: c,
+		vy:         0,
+		speed:      220,
+		alive:      true,
 	}
 }
 
@@ -35,10 +34,10 @@ func (p Player) NewHittingCeilingObj() *Obj {
 	return &Obj{p.x, p.y - 1, p.w, 1}
 }
 
-// func (p *Player) init(obj Obj, w *World, vy float64, speed float64, alive bool) *Player {
+// func (p *Player) init(obj Obj, w *Collisions, vy float64, speed float64, alive bool) *Player {
 // 	return &Player{
 // 		Obj:   obj,
-// 		world: w,
+// 		collisions: w,
 // 		vy:    0,
 // 		speed: 220,
 // 		alive: true,
@@ -59,18 +58,15 @@ func (p Player) getPosAndSize() (float64, float64, float64, float64) {
 }
 
 func (p Player) isGrounded() bool {
-	return p.world.checkIsColliding(p.NewGroundedObj()) != nil
+	return p.Collisions.checkIsColliding(p.NewGroundedObj()) != nil
 }
 
 func (p Player) isHittingCeiling() bool {
-	return p.world.checkIsColliding(p.NewHittingCeilingObj()) != nil
+	return p.Collisions.checkIsColliding(p.NewHittingCeilingObj()) != nil
 }
 
 func (p *Player) checkDead() {
-	if obj := p.world.checkIsColliding(p.NewGroundedObj()); obj != nil && typeof(obj) == "*main.Spikes" {
-		fmt.Println("Stepping on a : ")
-		fmt.Println(typeof(obj))
-		fmt.Println("===============")
+	if obj := p.Collisions.checkIsColliding(p.NewGroundedObj()); obj != nil && typeof(obj) == "*main.Spikes" {
 		p.alive = false
 	}
 }
@@ -88,13 +84,13 @@ func (p *Player) Update() error {
 	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
 		dx = dx + dt*p.speed
 	}
-	p.world.move(p, p.x+dx, p.y+p.vy)
+	p.Collisions.move(p, p.x+dx, p.y+p.vy)
 	p.vy = math.Min(p.vy+GRAVITY*dt, 12)
 	if p.isGrounded() {
 		p.vy = 0
 	}
 	if p.isHittingCeiling() {
-		p.vy = GRAVITY*dt
+		p.vy = GRAVITY * dt
 	}
 	p.checkDead()
 	return nil
