@@ -7,8 +7,10 @@ import (
 )
 
 type PauseState struct {
-	sm *StateManager
+	sm *SceneManager
 }
+
+func (s *PauseState) processMsg(msg string) {}
 
 func (s *PauseState) Update() error {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
@@ -21,6 +23,6 @@ func (s *PauseState) Draw(screen *ebiten.Image) {
 	ebitenutil.DebugPrint(screen, "=== PAUSE SCREEN ===")
 }
 
-func (s *PauseState) initState(sm *StateManager) {
+func (s *PauseState) initState(sm *SceneManager) {
 	s.sm = sm
 }

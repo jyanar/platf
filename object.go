@@ -2,16 +2,19 @@ package main
 
 import "github.com/hajimehoshi/ebiten/v2"
 
-type Obj struct {
-	x, y, w, h float64
-}
-
-type PosObj interface {
+// A PositionalObject is one for which we can set
+type PositionalObject interface {
 	getPosition() (float64, float64)
 	setPosition(x, y float64)
-	getPosAndSize() (float64, float64, float64, float64)
-	Update() error
-	Draw(screen *ebiten.Image)
+	getPosAndSize() (x, y, w, h float64)
+}
+
+// getPosition() (float64, float64)
+// setPosition(x, y float64)
+// getPosAndSize() (float64, float64, float64, float64)
+
+type Obj struct {
+	x, y, w, h float64
 }
 
 func (o *Obj) setPosition(x, y float64) {

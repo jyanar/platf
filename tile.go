@@ -8,11 +8,18 @@ import (
 )
 
 type Tile struct {
+	// TODO I think it potentially makes more sense to put the specific parent state here, rather than the SceneManager?
+	// However, you should not construct a pointer to an interface (SceneManager is a struct)
+	sm *SceneManager
 	Obj
 }
 
-func NewTile(obj Obj) *Tile {
-	return &Tile{obj}
+func NewTile(sm *SceneManager, obj Obj) *Tile {
+	return &Tile{sm, obj}
+}
+
+func (t Tile) notify(msg string) {
+	t.sm.getCurrent().processMsg(msg)
 }
 
 func (t Tile) getPosition() (float64, float64) {

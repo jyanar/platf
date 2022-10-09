@@ -7,8 +7,10 @@ import (
 )
 
 type DeadState struct {
-	sm *StateManager
+	sm *SceneManager
 }
+
+func (s *DeadState) processMsg(msg string) {}
 
 func (s *DeadState) Update() error {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
@@ -22,6 +24,6 @@ func (s *DeadState) Draw(screen *ebiten.Image) {
 	ebitenutil.DebugPrint(screen, "\n=== Press [enter] to restart ===")
 }
 
-func (s *DeadState) initState(sm *StateManager) {
+func (s *DeadState) initState(sm *SceneManager) {
 	s.sm = sm
 }

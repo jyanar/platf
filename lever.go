@@ -8,11 +8,16 @@ import (
 )
 
 type Lever struct {
+	sm *SceneManager
 	Obj
 }
 
-func NewLever(obj Obj) *Lever {
-	return &Lever{obj}
+func NewLever(sm *SceneManager, obj Obj) *Lever {
+	return &Lever{sm, obj}
+}
+
+func (l Lever) notify(msg string) {
+	l.sm.getCurrent().processMsg(msg)
 }
 
 func (l Lever) Update() error { return nil }
