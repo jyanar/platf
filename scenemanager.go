@@ -48,8 +48,8 @@ import "github.com/hajimehoshi/ebiten/v2"
 //
 
 type Scene interface {
-	initState(sm *SceneManager)
-	Update() error
+	init()
+	Update(state *GameState) error
 	Draw(screen *ebiten.Image)
 }
 
@@ -59,13 +59,11 @@ type SceneManager struct {
 }
 
 type GameState struct {
+	*SceneManager
 }
 
 func (sm *SceneManager) Update() error {
-	if res := sm.scenes[sm.curidx].Update(); res != nil {
-		return res
-	}
-	return nil
+	return sm.scenes[sm.curidx].Update(&GameState{sm})
 }
 
 func (sm *SceneManager) Draw(screen *ebiten.Image) {
@@ -83,11 +81,11 @@ func (sm SceneManager) getCurrent() Scene {
 func (sm *SceneManager) push(scene Scene) {
 	sm.scenes = append(sm.scenes, scene)
 	sm.curidx = len(sm.scenes) - 1
-	sm.scenes[sm.curidx].initState(sm)
+	sm.scenes[sm.curidx].init()
 }
 
 func (sm *SceneManager) pop() {
-	sm.curidx = len(sm.scenes) - 2
+	sm.curidx = sm.curidx - 1
 	sm.scenes = sm.scenes[:len(sm.scenes)-1] // discard last state
 }
 

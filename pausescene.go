@@ -6,13 +6,11 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
-type PauseScene struct {
-	sm *SceneManager
-}
+type PauseScene struct{}
 
-func (s *PauseScene) Update() error {
+func (s *PauseScene) Update(state *GameState) error {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		s.sm.pop()
+		state.SceneManager.pop()
 	}
 	return nil
 }
@@ -21,6 +19,4 @@ func (s *PauseScene) Draw(screen *ebiten.Image) {
 	ebitenutil.DebugPrint(screen, "=== PAUSE SCREEN ===")
 }
 
-func (s *PauseScene) initState(sm *SceneManager) {
-	s.sm = sm
-}
+func (s *PauseScene) init() {}

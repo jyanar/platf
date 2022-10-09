@@ -9,31 +9,29 @@ import (
 )
 
 type PlayScene struct {
-	sm *SceneManager
 	World
 	Player
 	Level
 }
 
-func NewPlayState(sm *SceneManager, w World, p Player, l Level) *PlayScene {
+func NewPlayState(w World, p Player, l Level) *PlayScene {
 	s := &PlayScene{}
-	s.sm = sm
 	s.World = w
 	s.Player = p
 	s.Level = l
 	return s
 }
 
-func (s *PlayScene) Update() error {
+func (s *PlayScene) Update(state *GameState) error {
 	for _, item := range s.World.items {
 		item.Update()
 	}
 	if !s.Player.alive {
-		s.sm.push(&PauseScene{})
+		state.SceneManager.push(&DeadScene{})
 	}
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		s.sm.push(&PauseScene{})
+		state.SceneManager.push(&PauseScene{})
 	}
 	return nil
 }
@@ -49,9 +47,8 @@ func (s *PlayScene) Layout(outsideWidth, outsideHeight int) (screenWidth, screen
 	return WINDOWSIZE, WINDOWSIZE
 }
 
-func (s *PlayScene) initState(sm *SceneManager) {
+func (s *PlayScene) init() {
 	s.Player = Player{}
 	s.World.init()
 	s.Level.init(16, map1, &s.World, &s.Player)
-	s.sm = sm
 }
