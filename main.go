@@ -9,8 +9,8 @@ import (
 func main() {
 	ebiten.SetWindowSize(WINDOWSIZE*2, WINDOWSIZE*2)
 	ebiten.SetWindowTitle("platf")
-	sm := &StateManager{}
-	sm.push(&PlayState{})
+	sm := &SceneManager{}
+	sm.push(&PlayScene{})
 	if err := ebiten.RunGame(sm); err != nil {
 		log.Fatal(err)
 	}

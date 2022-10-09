@@ -6,22 +6,22 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
-type DeadState struct {
-	sm *StateManager
+type DeadScene struct {
+	sm *SceneManager
 }
 
-func (s *DeadState) Update() error {
+func (s *DeadScene) Update() error {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
 		s.sm.pop()
 	}
 	return nil
 }
 
-func (s *DeadState) Draw(screen *ebiten.Image) {
+func (s *DeadScene) Draw(screen *ebiten.Image) {
 	ebitenutil.DebugPrint(screen, "=== YOU ARE DEAD ===\n")
 	ebitenutil.DebugPrint(screen, "\n=== Press [enter] to restart ===")
 }
 
-func (s *DeadState) initState(sm *StateManager) {
+func (s *DeadScene) initState(sm *SceneManager) {
 	s.sm = sm
 }
