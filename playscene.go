@@ -29,7 +29,7 @@ func (s *PlayScene) Update(state *GameState) error {
 	}
 	// Update collisions
 	for _, item := range s.Collisions.items {
-		item.Update()
+		item.Update(state)
 	}
 	// Check player status
 	if !s.Player.alive {
@@ -39,9 +39,8 @@ func (s *PlayScene) Update(state *GameState) error {
 }
 
 func (s *PlayScene) Draw(screen *ebiten.Image) {
-	for _, item := range s.Collisions.items {
-		item.Draw(screen)
-	}
+	s.Level.Draw(screen)
+	s.Player.Draw(screen)
 	ebitenutil.DebugPrint(screen, fmt.Sprintf("TPS: %0.2f\nFPS: %0.2f", ebiten.ActualTPS(), ebiten.ActualFPS()))
 }
 
@@ -53,4 +52,14 @@ func (s *PlayScene) init() {
 	s.Player = Player{}
 	s.Collisions = Collisions{}
 	s.Level.init(16, map1, &s.Collisions, &s.Player)
+}
+
+func (s *PlayScene) trigger(msg string) {
+	switch msg {
+	case "player:action":
+		// Enable/Disable all togglefloors
+		for i := 0; i < len(s.Level.toggleFloors); i++ {
+			s.Level.toggleFloors[i].isSolid = !s.Level.toggleFloors[i].isSolid
+		}
+	}
 }

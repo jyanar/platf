@@ -1,0 +1,26 @@
+[ ] Implement some kind of messaging system where objects can notify the player he's dead
+    Can go with this sort of structure first. If it turns out that it is more elegant to just
+    handle everything at the level of the world or player or playstate, then we can switch to
+    that.
+
+    Advantages of per-item check and then call:
+    - More generic -- the items can send out whatever signal is needed, and the PlayState
+        processes those signals appropriately. This keeps objects in the world fairly lightweight
+        and keeps the actual logic of the game in PlayState.
+
+    Performing checks in PlayState:
+    - Basically, the Player tells PlayState whether it's touching something like spikes or a lever,
+    or hitting "e" when interacting with something. Then PlayState handles all of that logic.
+
+    So it seems like it's a battle between having each item send out their signals to the PlayState,
+    or instead having all of the checking logic inside of player and PlayState.
+
+    One benefit of having the logic inside the items themselves, is that it might make it easier
+    to implement environment-environment interactions later on.
+
+---
+
+There's a few things we need to do right now.
+
+1. Set up a system with which the player can interact with levers in order to toggle the floors on or off.
+2. Should this ideally be the same system that handles killing the player if they touch a spike?

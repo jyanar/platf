@@ -2,24 +2,20 @@ package main
 
 // Collisions is a colletion of objects with positional data
 type Collisions struct {
-	items []PosObj
+	items []Entity
 }
 
 func NewCollisions() *Collisions {
 	c := &Collisions{}
-	c.items = []PosObj{}
+	c.items = []Entity{}
 	return c
 }
 
-func (c *Collisions) init() {
-	c.items = []PosObj{}
-}
-
-func (c *Collisions) add(item PosObj) {
+func (c *Collisions) add(item Entity) {
 	c.items = append(c.items, item)
 }
 
-func (w Collisions) areOverlapping(a, b PosObj) bool {
+func (w Collisions) areOverlapping(a, b Entity) bool {
 	aX, aY, aW, aH := a.getPosAndSize()
 	bX, bY, bW, bH := b.getPosAndSize()
 	return aX < bX+bW && // aX is less than b+width
@@ -28,7 +24,7 @@ func (w Collisions) areOverlapping(a, b PosObj) bool {
 		aH+aY > bY // but, a+height is greater than b
 }
 
-func (c Collisions) computeOverlap(a, b PosObj) (width float64, height float64) {
+func (c Collisions) computeOverlap(a, b Entity) (width float64, height float64) {
 	ax, ay, aw, ah := a.getPosAndSize()
 	bx, by, bw, bh := b.getPosAndSize()
 	if ax+aw > bx+bw {
@@ -44,16 +40,16 @@ func (c Collisions) computeOverlap(a, b PosObj) (width float64, height float64) 
 	return width, height
 }
 
-func (c Collisions) checkIsColliding(item PosObj) (collidingobj PosObj) {
+func (c Collisions) checkIsColliding(item Entity) (collidingobj Entity) {
 	for _, other := range c.items {
-		if other != item && c.areOverlapping(item, other) {
+		if other != item && other.Solid() && c.areOverlapping(item, other) {
 			collidingobj = other
 		}
 	}
 	return
 }
 
-func (c *Collisions) move(item PosObj, newX float64, newY float64) {
+func (c *Collisions) move(item Entity, newX float64, newY float64) {
 	prevX, prevY := item.getPosition()
 
 	// move in the x and check collisions
@@ -78,6 +74,15 @@ func (c *Collisions) move(item PosObj, newX float64, newY float64) {
 		}
 		item.setPosition(newX, newY)
 	}
+}
+
+func (c Collisions) getItem(item string) Entity {
+	for _, i := range c.items {
+		if typeof(i) == "*main.Lever" {
+			return i
+		}
+	}
+	return nil
 }
 
 // func (w *Collisions) Update() error {

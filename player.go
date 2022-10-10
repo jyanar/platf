@@ -2,10 +2,12 @@ package main
 
 import (
 	"image"
+	"log"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 type Player struct {
@@ -65,14 +67,18 @@ func (p Player) isHittingCeiling() bool {
 	return p.Collisions.checkIsColliding(p.NewHittingCeilingObj()) != nil
 }
 
+func (p Player) isOnLever() bool {
+	lever := p.Collisions.getItem("*main.Lever")
+	return p.Collisions.areOverlapping(lever, &p)
+}
+
 func (p *Player) checkDead() {
 	if obj := p.Collisions.checkIsColliding(p.NewGroundedObj()); obj != nil && typeof(obj) == "*main.Spikes" {
 		p.alive = false
 	}
 }
 
-func (p *Player) Update() error {
-	p.alive = true
+func (p *Player) Update(state *GameState) error {
 	dt := 0.01
 	dx := 0.0
 	if ebiten.IsKeyPressed(ebiten.KeyArrowUp) && p.isGrounded() {
@@ -83,6 +89,11 @@ func (p *Player) Update() error {
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
 		dx = dx + dt*p.speed
+	}
+	if inpututil.IsKeyJustPressed(ebiten.KeyE) { //&& p.isOnLever() {
+		// TODO BUG Platforms above the ground are still solid
+		log.Println("triggering player:action")
+		state.SceneManager.getCurrent().trigger("player:action")
 	}
 	p.Collisions.move(p, p.x+dx, p.y+p.vy)
 	p.vy = math.Min(p.vy+GRAVITY*dt, 12)
@@ -96,6 +107,6 @@ func (p *Player) Update() error {
 	return nil
 }
 
-func (p *Player) Draw(screen *ebiten.Image) {
+func (p Player) Draw(screen *ebiten.Image) {
 	ebitenutil.DrawRect(screen, p.x, p.y, p.w, p.h, image.White)
 }

@@ -49,6 +49,7 @@ import "github.com/hajimehoshi/ebiten/v2"
 
 type Scene interface {
 	init()
+	trigger(msg string)
 	Update(state *GameState) error
 	Draw(screen *ebiten.Image)
 }

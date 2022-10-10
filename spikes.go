@@ -15,8 +15,14 @@ func NewSpikes(obj Obj) *Spikes {
 	return &Spikes{obj}
 }
 
-func (s Spikes) Update() error { return nil }
+func (s Spikes) Update(state *GameState) error { return nil }
 
 func (s Spikes) Draw(screen *ebiten.Image) {
 	ebitenutil.DrawCircle(screen, s.x+s.w/2, s.y+s.h/2, s.w/2, image.White)
 }
+
+func (s Spikes) Solid() bool {
+	return true
+}
+
+func (s Spikes) onTouch() {}

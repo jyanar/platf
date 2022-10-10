@@ -24,11 +24,15 @@ func (t *Tile) setPosition(x, y float64) {
 	t.y = y
 }
 
+func (t Tile) Solid() bool {
+	return true
+}
+
 func (t Tile) getPosAndSize() (float64, float64, float64, float64) {
 	return t.x, t.y, t.w, t.h
 }
 
-func (t Tile) Update() error { return nil }
+func (t Tile) Update(state *GameState) error { return nil }
 
 func (t Tile) Draw(screen *ebiten.Image) {
 	ebitenutil.DrawRect(screen, t.x, t.y, t.w, t.h, image.White)

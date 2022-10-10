@@ -20,3 +20,5 @@ func (s *PauseScene) Draw(screen *ebiten.Image) {
 }
 
 func (s *PauseScene) init() {}
+
+func (s *PauseScene) trigger(msg string) {}

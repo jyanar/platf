@@ -16,9 +16,11 @@ func (s *DeadScene) Update(state *GameState) error {
 	return nil
 }
 
-func (s *DeadScene) Draw(screen *ebiten.Image) {
+func (s DeadScene) Draw(screen *ebiten.Image) {
 	ebitenutil.DebugPrint(screen, "=== YOU ARE DEAD ===\n")
 	ebitenutil.DebugPrint(screen, "\n=== Press [enter] to restart ===")
 }
 
 func (s *DeadScene) init() {}
+
+func (s *DeadScene) trigger(msg string) {}
