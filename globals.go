@@ -18,3 +18,5 @@ var TILETYPES = map[int]string{
 	6: "Lever",
 	9: "Player",
 }
+
+// var TEX *ebiten.Image

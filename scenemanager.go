@@ -46,6 +46,10 @@ import "github.com/hajimehoshi/ebiten/v2"
 //			return s.scenes[curidx].Update(sm)
 //		}
 //
+// Yes, we could. But, in ebiten examples GameState also has a pointer to
+// an Input struct. This means we can pass that input directly into the the
+// scene. That way Input code can be in one place, instead of being replicated
+// across a ton of different files.
 
 type Scene interface {
 	init()
