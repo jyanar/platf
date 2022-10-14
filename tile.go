@@ -9,10 +9,11 @@ import (
 
 type Tile struct {
 	Obj
+	assets Assets
 }
 
 func NewTile(obj Obj) *Tile {
-	return &Tile{obj}
+	return &Tile{obj, Assets{}}
 }
 
 func (t Tile) getPosition() (float64, float64) {
@@ -36,4 +37,5 @@ func (t Tile) Update(state *GameState) error { return nil }
 
 func (t Tile) Draw(screen *ebiten.Image) {
 	ebitenutil.DrawRect(screen, t.x, t.y, t.w, t.h, image.White)
+	t.assets.qdraw(screen, 1, t.x, t.y)
 }

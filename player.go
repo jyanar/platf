@@ -1,21 +1,20 @@
 package main
 
 import (
-	"image"
 	"log"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 type Player struct {
 	Obj
 	*Collisions
-	vy    float64
-	speed float64
-	alive bool
+	vy     float64
+	speed  float64
+	alive  bool
+	assets Assets
 }
 
 func NewPlayer(obj Obj, c *Collisions, vy float64, speed float64, alive bool) *Player {
@@ -108,5 +107,6 @@ func (p *Player) Update(state *GameState) error {
 }
 
 func (p Player) Draw(screen *ebiten.Image) {
-	ebitenutil.DrawRect(screen, p.x, p.y, p.w, p.h, image.White)
+	// ebitenutil.DrawRect(screen, p.x, p.y, p.w, p.h, image.White)
+	p.assets.qdraw(screen, 9, p.x, p.y)
 }

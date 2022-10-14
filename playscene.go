@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -58,8 +59,12 @@ func (s *PlayScene) trigger(msg string) {
 	switch msg {
 	case "player:action":
 		// Enable/Disable all togglefloors
-		for i := 0; i < len(s.Level.toggleFloors); i++ {
+		for i := range s.Level.toggleFloors {
+			log.Printf("Now on toggleFloor: %v\n", i)
 			s.Level.toggleFloors[i].isSolid = !s.Level.toggleFloors[i].isSolid
 		}
+	}
+	for i := range s.Level.toggleFloors {
+		log.Printf("toggle floor %v: %v", i, s.Level.toggleFloors[i].Solid())
 	}
 }

@@ -1,5 +1,7 @@
 package main
 
+import "log"
+
 // Collisions is a colletion of objects with positional data
 type Collisions struct {
 	items []Entity
@@ -42,6 +44,7 @@ func (c Collisions) computeOverlap(a, b Entity) (width float64, height float64) 
 
 func (c Collisions) checkIsColliding(item Entity) (collidingobj Entity) {
 	for _, other := range c.items {
+		other := other
 		if other != item && other.Solid() && c.areOverlapping(item, other) {
 			collidingobj = other
 		}
@@ -50,6 +53,8 @@ func (c Collisions) checkIsColliding(item Entity) (collidingobj Entity) {
 }
 
 func (c *Collisions) move(item Entity, newX float64, newY float64) {
+	// TODO Something is going on here with the toggleFloors.Solid() being
+	//      true when they were set false.
 	prevX, prevY := item.getPosition()
 
 	// move in the x and check collisions
@@ -66,6 +71,7 @@ func (c *Collisions) move(item Entity, newX float64, newY float64) {
 	// move in the y and check collisions
 	item.setPosition(newX, newY)
 	if colObj := c.checkIsColliding(item); colObj != nil {
+		log.Println(typeof(colObj))
 		_, height := c.computeOverlap(item, colObj)
 		if newY > prevY {
 			newY = newY - height // item is moving left

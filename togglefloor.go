@@ -10,10 +10,11 @@ import (
 type ToggleFloor struct {
 	Obj
 	isSolid bool
+	assets  Assets
 }
 
 func NewToggleFloor(obj Obj) *ToggleFloor {
-	return &ToggleFloor{obj, true}
+	return &ToggleFloor{obj, true, Assets{}}
 }
 
 func (t ToggleFloor) Solid() bool {
@@ -24,7 +25,7 @@ func (t ToggleFloor) Update(state *GameState) error { return nil }
 
 func (t ToggleFloor) Draw(screen *ebiten.Image) {
 	if t.Solid() {
-		ebitenutil.DrawCircle(screen, t.x+t.w/2, t.y+t.h/2, t.w/2, image.White)
+		t.assets.qdraw(screen, 7, t.x, t.y)
 	} else {
 		ebitenutil.DrawRect(screen, t.x, t.y, 3, 3, image.White)
 	}

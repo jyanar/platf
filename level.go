@@ -30,21 +30,25 @@ func (l *Level) init(width int, data []int, c *Collisions, player *Player) {
 		switch TILETYPES[l.data[i]] {
 		case "Tile":
 			l.tiles = append(l.tiles, *NewTile(obj))
-			l.Collisions.add(&l.tiles[len(l.tiles)-1])
+			ptr := &l.tiles[len(l.tiles)-1]
+			l.Collisions.add(ptr)
 
 		case "ToggleFloor":
-			t := ToggleFloor{obj, true}
+			t := ToggleFloor{obj, true, Assets{}}
 			l.toggleFloors = append(l.toggleFloors, t)
-			l.Collisions.add(&l.toggleFloors[len(l.toggleFloors)-1])
+			ptr := &l.toggleFloors[len(l.toggleFloors)-1]
+			l.Collisions.add(ptr)
 			// l.Collisions.add(&l.toggleFloors[len(l.toggleFloors)-1])
 
 		case "Spikes":
 			l.spikes = append(l.spikes, *NewSpikes(obj))
-			l.Collisions.add(&l.spikes[len(l.spikes)-1])
+			ptr := &l.spikes[len(l.spikes)-1]
+			l.Collisions.add(ptr)
 
 		case "Lever":
 			l.levers = append(l.levers, *NewLever(obj))
-			l.Collisions.add(&l.levers[len(l.levers)-1])
+			ptr := &l.levers[len(l.levers)-1]
+			l.Collisions.add(ptr)
 
 		case "Player":
 			player.Obj = obj
@@ -58,16 +62,16 @@ func (l *Level) init(width int, data []int, c *Collisions, player *Player) {
 }
 
 func (l Level) Draw(screen *ebiten.Image) {
-	for _, l := range l.tiles {
-		l.Draw(screen)
+	for i := range l.tiles {
+		l.tiles[i].Draw(screen)
 	}
-	for _, l := range l.toggleFloors {
-		l.Draw(screen)
+	for i := range l.toggleFloors {
+		l.toggleFloors[i].Draw(screen)
 	}
-	for _, l := range l.spikes {
-		l.Draw(screen)
+	for i := range l.spikes {
+		l.spikes[i].Draw(screen)
 	}
-	for _, l := range l.levers {
-		l.Draw(screen)
+	for i := range l.levers {
+		l.levers[i].Draw(screen)
 	}
 }
