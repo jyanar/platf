@@ -89,7 +89,7 @@ func (p *Player) Update(state *GameState) error {
 	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
 		dx = dx + dt*p.speed
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyE) { //&& p.isOnLever() {
+	if inpututil.IsKeyJustPressed(ebiten.KeyE) && p.isOnLever() {
 		// TODO BUG Platforms above the ground are still solid
 		log.Println("triggering player:action")
 		state.SceneManager.getCurrent().trigger("player:action")

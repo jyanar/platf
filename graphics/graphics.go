@@ -24,7 +24,7 @@ func Load() error {
 	var err error
 
 	// load the texture atlas
-	Atlas, err = getEbitenImage("tex.png")
+	Atlas, err = getEbitenImage("atlas.png")
 	if err != nil {
 		return err
 	}

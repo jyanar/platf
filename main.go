@@ -15,7 +15,7 @@ func main() {
 	sm.push(&PlayScene{})
 	err := graphics.Load()
 	if err != nil {
-		fmt.Println("ERROR!")
+		fmt.Println(err)
 	}
 	if err := ebiten.RunGame(sm); err != nil {
 		log.Fatal(err)

@@ -63,6 +63,8 @@ func (s *PlayScene) trigger(msg string) {
 			log.Printf("Now on toggleFloor: %v\n", i)
 			s.Level.toggleFloors[i].isSolid = !s.Level.toggleFloors[i].isSolid
 		}
+		// And toggle the lever
+		s.Level.levers[0].toggle = !s.Level.levers[0].toggle
 	}
 	for i := range s.Level.toggleFloors {
 		log.Printf("toggle floor %v: %v", i, s.Level.toggleFloors[i].Solid())
