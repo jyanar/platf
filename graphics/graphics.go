@@ -11,14 +11,14 @@ var Atlas *ebiten.Image
 
 // In the atlas, numbers are left -> right
 var Tile 		*ebiten.Image // 0
-var ToggleFloor *ebiten.Image // 1
-var Empty 		*ebiten.Image // 2
-var Symbol 		*ebiten.Image // 3
-var Spikes 		*ebiten.Image // 4
-var LeverOff 	*ebiten.Image // 5
-var LeverOn 	*ebiten.Image // 6
-var Player 		*ebiten.Image // 8
-var Enemy 		*ebiten.Image // 20
+var ToggleFloor	*ebiten.Image // 1
+var Empty		*ebiten.Image // 2
+var Symbol		*ebiten.Image // 3
+var Spikes		*ebiten.Image // 4
+var LeverOff	*ebiten.Image // 5
+var LeverOn		*ebiten.Image // 6
+var Player		*ebiten.Image // 8
+var Enemy		*ebiten.Image // 20
 
 func Load() error {
 	var err error
