@@ -34,11 +34,10 @@ func (l *Level) init(width int, data []int, c *Collisions, player *Player) {
 			l.Collisions.add(ptr)
 
 		case "ToggleFloor":
-			t := ToggleFloor{obj, true, Assets{}}
+			t := ToggleFloor{obj, true}
 			l.toggleFloors = append(l.toggleFloors, t)
 			ptr := &l.toggleFloors[len(l.toggleFloors)-1]
 			l.Collisions.add(ptr)
-			// l.Collisions.add(&l.toggleFloors[len(l.toggleFloors)-1])
 
 		case "Spikes":
 			l.spikes = append(l.spikes, *NewSpikes(obj))

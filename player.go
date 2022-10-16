@@ -6,6 +6,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/jyanar/platf/graphics"
 )
 
 type Player struct {
@@ -14,7 +15,6 @@ type Player struct {
 	vy     float64
 	speed  float64
 	alive  bool
-	assets Assets
 }
 
 func NewPlayer(obj Obj, c *Collisions, vy float64, speed float64, alive bool) *Player {
@@ -107,6 +107,7 @@ func (p *Player) Update(state *GameState) error {
 }
 
 func (p Player) Draw(screen *ebiten.Image) {
-	// ebitenutil.DrawRect(screen, p.x, p.y, p.w, p.h, image.White)
-	p.assets.qdraw(screen, 9, p.x, p.y)
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Translate(p.x, p.y)
+	screen.DrawImage(graphics.Player, op)
 }

@@ -1,19 +1,16 @@
 package main
 
 import (
-	"image"
-
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/jyanar/platf/graphics"
 )
 
 type Tile struct {
 	Obj
-	assets Assets
 }
 
 func NewTile(obj Obj) *Tile {
-	return &Tile{obj, Assets{}}
+	return &Tile{obj}
 }
 
 func (t Tile) getPosition() (float64, float64) {
@@ -36,6 +33,7 @@ func (t Tile) getPosAndSize() (float64, float64, float64, float64) {
 func (t Tile) Update(state *GameState) error { return nil }
 
 func (t Tile) Draw(screen *ebiten.Image) {
-	ebitenutil.DrawRect(screen, t.x, t.y, t.w, t.h, image.White)
-	t.assets.qdraw(screen, 1, t.x, t.y)
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Translate(t.x, t.y)
+	screen.DrawImage(graphics.Tile, op)
 }
