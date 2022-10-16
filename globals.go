@@ -8,7 +8,7 @@ const (
 
 const (
 	GRAVITY    = 40
-	JUMP_SPEED = -8
+	JUMP_SPEED = -7
 )
 
 var TILETYPES = map[int]string{
@@ -18,5 +18,3 @@ var TILETYPES = map[int]string{
 	6: "Lever",
 	9: "Player",
 }
-
-// var TEX *ebiten.Image

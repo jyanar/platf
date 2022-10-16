@@ -2,7 +2,7 @@ package main
 
 import "log"
 
-// Collisions is a colletion of objects with positional data
+// Collisions is a collection of objects with positional data
 type Collisions struct {
 	items []Entity
 }
@@ -90,25 +90,3 @@ func (c Collisions) getItem(item string) Entity {
 	}
 	return nil
 }
-
-// func (w *Collisions) Update() error {
-// 	for _, item := range w.items {
-// 		item.Update()
-// 	}
-// 	return nil
-// }
-
-// func (w Collisions) Draw(screen *ebiten.Image) {
-// 	for _, item := range w.items {
-// 		item.Draw(screen)
-// 	}
-// }
-
-// func (w Collisions) getPlayer() *Player {
-// 	for _, item := range w.items {
-// 		if typeof(item) == "*main.Player" {
-// 			return &item
-// 		}
-// 	}
-// 	return &Player{}
-// }

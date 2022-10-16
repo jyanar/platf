@@ -23,6 +23,12 @@ func NewPlayScene(w Collisions, p Player, l Level) *PlayScene {
 	return s
 }
 
+func (s *PlayScene) init() {
+	s.Player = Player{}
+	s.Collisions = Collisions{}
+	s.Level.init(16, map2, &s.Collisions, &s.Player)
+}
+
 func (s *PlayScene) Update(state *GameState) error {
 	// Handle input
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
@@ -47,12 +53,6 @@ func (s *PlayScene) Draw(screen *ebiten.Image) {
 
 func (s *PlayScene) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
 	return WINDOWSIZE, WINDOWSIZE
-}
-
-func (s *PlayScene) init() {
-	s.Player = Player{}
-	s.Collisions = Collisions{}
-	s.Level.init(16, map1, &s.Collisions, &s.Player)
 }
 
 func (s *PlayScene) trigger(msg string) {
