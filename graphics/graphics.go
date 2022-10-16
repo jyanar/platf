@@ -72,7 +72,7 @@ func getImageFromFilePath(filePath string) (image.Image, error) {
 }
 
 func getEbitenImage(filepath string) (*ebiten.Image, error) {
-	img, err := getImageFromFilePath("tex.png")
+	img, err := getImageFromFilePath("atlas.png")
 	if err != nil {
 		return &ebiten.Image{}, err
 	}
