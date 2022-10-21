@@ -24,7 +24,7 @@ func (s Spikes) Draw(screen *ebiten.Image) {
 }
 
 func (s Spikes) Solid() bool {
-	return true
+	return s.Obj.Solid()
 }
 
 // func (s Spikes) onTouch() {}

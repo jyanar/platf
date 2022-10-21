@@ -28,11 +28,11 @@ func NewPlayer(obj Obj, c *Collisions, vy float64, speed float64, alive bool) *P
 }
 
 func (p Player) NewGroundedObj() *Obj {
-	return &Obj{p.x, p.y + p.h, p.w, 1}
+	return &Obj{p.x, p.y + p.h, p.w, 1, true}
 }
 
 func (p Player) NewHittingCeilingObj() *Obj {
-	return &Obj{p.x, p.y - 1, p.w, 1}
+	return &Obj{p.x, p.y - 1, p.w, 1, true}
 }
 
 // func (p *Player) init(obj Obj, w *Collisions, vy float64, speed float64, alive bool) *Player {
@@ -66,15 +66,19 @@ func (p Player) isHittingCeiling() bool {
 	return p.Collisions.checkIsColliding(p.NewHittingCeilingObj()) != nil
 }
 
-func (p Player) isOnLever() bool {
-	lever := p.Collisions.getItem("*main.Lever")
-	return p.Collisions.areOverlapping(lever, &p)
-}
+// func (p Player) isOnLever() bool {
+// 	lever := p.Collisions.getItem("*main.Lever")
+// 	return p.Collisions.areOverlapping(lever, &p)
+// }
 
 func (p *Player) checkDead() {
 	if obj := p.Collisions.checkIsColliding(p.NewGroundedObj()); obj != nil && typeof(obj) == "*main.Spikes" {
 		p.alive = false
 	}
+}
+
+func (p Player) Solid() bool {
+	return p.Obj.Solid()
 }
 
 func (p *Player) Update(state *GameState) error {
@@ -89,12 +93,11 @@ func (p *Player) Update(state *GameState) error {
 	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
 		dx = dx + dt*p.speed
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyE) && p.isOnLever() {
-		// TODO BUG Platforms above the ground are still solid
+	if inpututil.IsKeyJustPressed(ebiten.KeyE) {//&& p.isOnLever() {
 		log.Println("triggering player:action")
 		state.SceneManager.getCurrent().trigger("player:action")
 	}
-	p.Collisions.move(p, p.x+dx, p.y+p.vy)
+	p.Collisions.move(&p.Obj, p.x+dx, p.y+p.vy)
 	p.vy = math.Min(p.vy+GRAVITY*dt, 12)
 	if p.isGrounded() {
 		p.vy = 0

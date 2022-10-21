@@ -8,15 +8,14 @@ import (
 type Lever struct {
 	Obj
 	toggle  bool
-	isSolid bool
 }
 
 func NewLever(obj Obj) *Lever {
-	return &Lever{obj, false, false}
+	return &Lever{obj, false}
 }
 
 func (l Lever) Solid() bool {
-	return l.isSolid
+	return l.Obj.Solid()
 }
 
 func (l Lever) Update(state *GameState) error { return nil }

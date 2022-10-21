@@ -4,6 +4,7 @@ import "github.com/hajimehoshi/ebiten/v2"
 
 type Obj struct {
 	x, y, w, h float64
+	isSolid bool
 }
 
 type PositionalObject interface {
@@ -26,7 +27,7 @@ func (o Obj) getPosAndSize() (float64, float64, float64, float64) {
 }
 
 func (o Obj) Solid() bool {
-	return true
+	return o.isSolid
 }
 
 func (o Obj) Update(state *GameState) error { return nil }

@@ -23,7 +23,7 @@ func (t *Tile) setPosition(x, y float64) {
 }
 
 func (t Tile) Solid() bool {
-	return true
+	return t.Obj.Solid()
 }
 
 func (t Tile) getPosAndSize() (float64, float64, float64, float64) {

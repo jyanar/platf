@@ -13,41 +13,38 @@ type Level struct {
 	toggleFloors []ToggleFloor
 	spikes       []Spikes
 	tiles        []Tile
-	*Collisions
 }
 
 func (l *Level) init(width int, data []int, c *Collisions, player *Player) {
 	l.width = width
 	l.data = data
-	l.Collisions = c
 	l.levers = []Lever{}
 	l.toggleFloors = []ToggleFloor{}
 	l.spikes = []Spikes{}
 	l.tiles = []Tile{}
 	for i := 0; i < len(l.data); i++ {
 		x, y := float64((i%l.width)*TILESIZE), math.Floor(float64(i)/float64(l.width))*TILESIZE
-		obj := Obj{x: x, y: y, w: float64(TILESIZE), h: float64(TILESIZE)}
+		obj := Obj{x: x, y: y, w: float64(TILESIZE), h: float64(TILESIZE), isSolid: true}
 		switch TILETYPES[l.data[i]] {
 		case "Tile":
-			l.tiles = append(l.tiles, *NewTile(obj))
-			ptr := &l.tiles[len(l.tiles)-1]
-			l.Collisions.add(ptr)
+			l.tiles = append(l.tiles, Tile{obj})
+			// l.tiles = append(l.tiles, *NewTile(obj))
+			c.add(&l.tiles[len(l.tiles)-1].Obj)
 
 		case "ToggleFloor":
-			t := ToggleFloor{obj, true}
-			l.toggleFloors = append(l.toggleFloors, t)
-			ptr := &l.toggleFloors[len(l.toggleFloors)-1]
-			l.Collisions.add(ptr)
+			l.toggleFloors = append(l.toggleFloors, ToggleFloor{obj})
+			// l.toggleFloors = append(l.toggleFloors, *NewToggleFloor(obj))
+			// objpointer := &l.toggleFloors[len(l.toggleFloors)-1].Obj
+			c.add(&l.toggleFloors[len(l.toggleFloors)-1].Obj)
 
 		case "Spikes":
-			l.spikes = append(l.spikes, *NewSpikes(obj))
-			ptr := &l.spikes[len(l.spikes)-1]
-			l.Collisions.add(ptr)
+			l.spikes = append(l.spikes, Spikes{obj})
+			c.add(&l.spikes[len(l.spikes)-1].Obj)
 
 		case "Lever":
-			l.levers = append(l.levers, *NewLever(obj))
-			ptr := &l.levers[len(l.levers)-1]
-			l.Collisions.add(ptr)
+			obj.isSolid = false
+			l.levers = append(l.levers, Lever{obj, false})
+			c.add(&l.levers[len(l.levers)-1].Obj)
 
 		case "Player":
 			player.Obj = obj
@@ -55,7 +52,7 @@ func (l *Level) init(width int, data []int, c *Collisions, player *Player) {
 			player.vy = 0
 			player.speed = 220
 			player.alive = true
-			l.Collisions.add(player)
+			c.add(&player.Obj)
 		}
 	}
 }

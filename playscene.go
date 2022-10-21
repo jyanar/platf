@@ -25,8 +25,8 @@ func NewPlayScene(w Collisions, p Player, l Level) *PlayScene {
 
 func (s *PlayScene) init() {
 	s.Player = Player{}
-	s.Collisions = Collisions{}
-	s.Level.init(16, map2, &s.Collisions, &s.Player)
+	s.Collisions.init()
+	s.Level.init(16, testmap, &s.Collisions, &s.Player)
 }
 
 func (s *PlayScene) Update(state *GameState) error {
@@ -35,9 +35,7 @@ func (s *PlayScene) Update(state *GameState) error {
 		state.SceneManager.push(&PauseScene{})
 	}
 	// Update collisions
-	for _, item := range s.Collisions.items {
-		item.Update(state)
-	}
+	s.Player.Update(state)
 	// Check player status
 	if !s.Player.alive {
 		state.SceneManager.push(&DeadScene{})
@@ -61,10 +59,12 @@ func (s *PlayScene) trigger(msg string) {
 		// Enable/Disable all togglefloors
 		for i := range s.Level.toggleFloors {
 			log.Printf("Now on toggleFloor: %v\n", i)
-			s.Level.toggleFloors[i].isSolid = !s.Level.toggleFloors[i].isSolid
+			s.Level.toggleFloors[i].toggleSolid()
+			// s.Level.toggleFloors[i].Obj.isSolid = !s.Level.toggleFloors[i].Obj.isSolid
 		}
 		// And toggle the lever
 		s.Level.levers[0].toggle = !s.Level.levers[0].toggle
+		s.Collisions.printAllItems()
 	}
 	for i := range s.Level.toggleFloors {
 		log.Printf("toggle floor %v: %v", i, s.Level.toggleFloors[i].Solid())

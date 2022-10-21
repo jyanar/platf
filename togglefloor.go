@@ -7,15 +7,14 @@ import (
 
 type ToggleFloor struct {
 	Obj
-	isSolid bool
 }
 
 func NewToggleFloor(obj Obj) *ToggleFloor {
-	return &ToggleFloor{obj, true}
+	return &ToggleFloor{obj}
 }
 
 func (t ToggleFloor) Solid() bool {
-	return t.isSolid
+	return t.Obj.Solid()
 }
 
 func (t ToggleFloor) Update(state *GameState) error { return nil }
@@ -28,4 +27,8 @@ func (t ToggleFloor) Draw(screen *ebiten.Image) {
 	} else {
 		screen.DrawImage(graphics.Empty, op)
 	}
+}
+
+func (t *ToggleFloor) toggleSolid() {
+	t.isSolid = !t.isSolid
 }
