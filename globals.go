@@ -7,8 +7,12 @@ const (
 )
 
 const (
-	GRAVITY    = 40
-	JUMP_SPEED = -7
+	GRAVITY        = 8
+	JUMP_SPEED     = -12
+	MAX_SPEED      = 20
+	ACCELERATION   = 100
+	MAX_FALL_SPEED = 25
+	FRICTION       = 6
 )
 
 var TILETYPES = map[int]string{

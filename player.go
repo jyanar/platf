@@ -11,16 +11,18 @@ import (
 type Player struct {
 	Obj
 	*Collisions
-	vy    float64
+	velocity Vector
+	// vx    float64
+	// vy    float64
 	speed float64
 	alive bool
 }
 
-func NewPlayer(obj Obj, c *Collisions, vy float64, speed float64, alive bool) *Player {
+func NewPlayer(obj Obj, c *Collisions) *Player {
 	return &Player{
 		Obj:        obj,
 		Collisions: c,
-		vy:         0,
+		velocity:   Vector{0, 0},
 		speed:      220,
 		alive:      true,
 	}
@@ -65,46 +67,67 @@ func (p Player) isHittingCeiling() bool {
 	return p.Collisions.checkIsColliding(p.NewHittingCeilingObj()) != nil
 }
 
-// func (p Player) isOnLever() bool {
-// 	lever := p.Collisions.getItem("*main.Lever")
-// 	return p.Collisions.areOverlapping(lever, &p)
-// }
-
-func (p *Player) checkDead() {
-	if obj := p.Collisions.checkIsColliding(p.NewGroundedObj()); obj != nil && typeof(obj) == "*main.Spikes" {
-		p.alive = false
-	}
-}
-
 func (p Player) Solid() bool {
 	return p.Obj.Solid()
 }
 
 func (p *Player) Update(state *GameState) error {
-	dt := 0.01
-	dx := 0.0
+	// Take in input
+	dt := 0.1
 	if ebiten.IsKeyPressed(ebiten.KeyArrowUp) && p.isGrounded() {
-		p.vy = JUMP_SPEED
+		p.velocity.y = JUMP_SPEED
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
-		dx = dx - dt*p.speed
+		p.velocity.x -= ACCELERATION
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
-		dx = dx + dt*p.speed
+		p.velocity.x += ACCELERATION
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyE) {
 		state.SceneManager.getCurrent().trigger("player:action")
 	}
-	p.Collisions.move(&p.Obj, p.x+dx, p.y+p.vy)
-	p.vy = math.Min(p.vy+GRAVITY*dt, 12)
+
+	// Limit to MAX_SPEED / MAX_FALL_SPEED
+	if math.Abs(p.velocity.x) > MAX_SPEED {
+		p.velocity.x = sign(p.velocity.x) * MAX_SPEED
+	}
+	p.velocity.y = math.Min(p.velocity.y+GRAVITY*dt, MAX_FALL_SPEED)
+
+	p.Collisions.move(&p.Obj, p.x+p.velocity.x*dt, p.y+p.velocity.y)
+
 	if p.isGrounded() {
-		p.vy = 0
+		p.velocity.y = 0
 	}
 	if p.isHittingCeiling() {
-		p.vy = GRAVITY * dt
+		p.velocity.y = GRAVITY * dt
 	}
-	p.checkDead()
+
+	// Apply friction
+	if p.velocity.x > 0 {
+		p.velocity.x = moveToward(p.velocity.x, 0, FRICTION)
+	} else if p.velocity.x < 0 {
+		p.velocity.x = moveToward(p.velocity.x, 0, FRICTION)
+	}
 	return nil
+}
+
+func moveToward(start, stop, step float64) float64 {
+	switch {
+	case start < stop:
+		if start+step >= stop {
+			return stop
+		}
+		return start + step
+
+	case start > stop:
+		if start-step <= stop {
+			return stop
+		}
+		return start - step
+
+	default:
+		return stop
+	}
 }
 
 func (p Player) Draw(screen *ebiten.Image) {

@@ -46,7 +46,7 @@ func (l *Level) init(width int, data []int, c *Collisions, player *Player) {
 		case "Player":
 			player.Obj = obj
 			player.Collisions = c
-			player.vy = 0
+			player.velocity = Vector{0, 0}
 			player.speed = 220
 			player.alive = true
 			c.add(&player.Obj)
