@@ -7,7 +7,7 @@ import (
 
 type Lever struct {
 	Obj
-	toggle  bool
+	toggle bool
 }
 
 func NewLever(obj Obj) *Lever {

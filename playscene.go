@@ -25,7 +25,7 @@ func NewPlayScene(w Collisions, p Player, l Level) *PlayScene {
 func (s *PlayScene) init() {
 	s.Player = Player{}
 	s.Collisions.init()
-	s.Level.init(16, testmap, &s.Collisions, &s.Player)
+	s.Level.init(16, map2, &s.Collisions, &s.Player)
 }
 
 func (s *PlayScene) Update(state *GameState) error {
@@ -36,6 +36,12 @@ func (s *PlayScene) Update(state *GameState) error {
 	// Update collisions
 	s.Player.Update(state)
 	// Check player status
+	groundedObj := s.Player.NewGroundedObj()
+	for i := range s.Level.spikes {
+		if s.Collisions.areOverlapping(groundedObj, &s.Level.spikes[i].Obj) {
+			s.Player.alive = false
+		}
+	}
 	if !s.Player.alive {
 		state.SceneManager.push(&DeadScene{})
 	}
@@ -55,13 +61,10 @@ func (s *PlayScene) Layout(outsideWidth, outsideHeight int) (screenWidth, screen
 func (s *PlayScene) trigger(msg string) {
 	switch msg {
 	case "player:action":
-		// Is the player on top of a lever?
 		if s.Collisions.areOverlapping(&s.Player.Obj, &s.Level.levers[0].Obj) {
-			// Enable/Disable all togglefloors
 			for i := range s.Level.toggleFloors {
 				s.Level.toggleFloors[i].toggleSolid()
 			}
-			// And toggle the lever
 			s.Level.levers[0].toggle = !s.Level.levers[0].toggle
 		}
 	}
