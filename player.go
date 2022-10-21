@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -12,9 +11,9 @@ import (
 type Player struct {
 	Obj
 	*Collisions
-	vy     float64
-	speed  float64
-	alive  bool
+	vy    float64
+	speed float64
+	alive bool
 }
 
 func NewPlayer(obj Obj, c *Collisions, vy float64, speed float64, alive bool) *Player {
@@ -93,8 +92,7 @@ func (p *Player) Update(state *GameState) error {
 	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
 		dx = dx + dt*p.speed
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyE) {//&& p.isOnLever() {
-		log.Println("triggering player:action")
+	if inpututil.IsKeyJustPressed(ebiten.KeyE) {
 		state.SceneManager.getCurrent().trigger("player:action")
 	}
 	p.Collisions.move(&p.Obj, p.x+dx, p.y+p.vy)

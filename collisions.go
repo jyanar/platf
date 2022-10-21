@@ -25,9 +25,9 @@ func (c *Collisions) areOverlapping(a, b *Obj) bool {
 	aX, aY, aW, aH := a.getPosAndSize()
 	bX, bY, bW, bH := b.getPosAndSize()
 	return aX < bX+bW && // aX is less than b+width
-		   aX+aW > bX && // a+width is greater than bX
-		   aY < bY+bH && // a is less than b+height
-		   aH+aY > bY    // but, a+height is greater than b
+		aX+aW > bX && // a+width is greater than bX
+		aY < bY+bH && // a is less than b+height
+		aH+aY > bY // but, a+height is greater than b
 }
 
 func (c *Collisions) computeOverlap(a, b *Obj) (width float64, height float64) {
@@ -73,15 +73,12 @@ func (c *Collisions) move(item *Obj, newX float64, newY float64) {
 	// move in the y and check collisions
 	item.y = newY
 	if colObj := c.checkIsColliding(item); colObj != nil {
-		fmt.Printf("COLLIDING WITH: \n")
-		fmt.Println(colObj)
 		_, height := c.computeOverlap(item, colObj)
 		if newY > prevY {
 			newY = newY - height // item is moving left
 		} else {
 			newY = newY + height // item is moving right
 		}
-		// item.setPosition(newX, newY)
 		item.y = newY
 	}
 }
@@ -95,7 +92,7 @@ func (c *Collisions) move(item *Obj, newX float64, newY float64) {
 // 	return nil
 // }
 
-func (c *Collisions) printAllItems() {
+func (c Collisions) printAllItems() {
 	for i := range c.items {
 		fmt.Println(c.items[i])
 	}

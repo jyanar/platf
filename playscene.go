@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -56,22 +55,14 @@ func (s *PlayScene) Layout(outsideWidth, outsideHeight int) (screenWidth, screen
 func (s *PlayScene) trigger(msg string) {
 	switch msg {
 	case "player:action":
-		// Enable/Disable all togglefloors
-		for i := range s.Level.toggleFloors {
-			i := i
-			log.Printf("Now on toggleFloor: %v\n", i)
-			s.Level.toggleFloors[i].toggleSolid()
-			// s.Level.toggleFloors[i].Obj.isSolid = !s.Level.toggleFloors[i].Obj.isSolid
+		// Is the player on top of a lever?
+		if s.Collisions.areOverlapping(&s.Player.Obj, &s.Level.levers[0].Obj) {
+			// Enable/Disable all togglefloors
+			for i := range s.Level.toggleFloors {
+				s.Level.toggleFloors[i].toggleSolid()
+			}
+			// And toggle the lever
+			s.Level.levers[0].toggle = !s.Level.levers[0].toggle
 		}
-		// And toggle the lever
-		s.Level.levers[0].toggle = !s.Level.levers[0].toggle
-		// s.Collisions.printAllItems()
-	}
-	for i := range s.Level.toggleFloors {
-		log.Printf("toggle floor %v: %v", i, s.Level.toggleFloors[i].Solid())
-	}
-	for i := range s.Collisions.items {
-		i := i
-		log.Printf("item: %v\n", s.Collisions.items[i])
 	}
 }
