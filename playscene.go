@@ -58,15 +58,20 @@ func (s *PlayScene) trigger(msg string) {
 	case "player:action":
 		// Enable/Disable all togglefloors
 		for i := range s.Level.toggleFloors {
+			i := i
 			log.Printf("Now on toggleFloor: %v\n", i)
 			s.Level.toggleFloors[i].toggleSolid()
 			// s.Level.toggleFloors[i].Obj.isSolid = !s.Level.toggleFloors[i].Obj.isSolid
 		}
 		// And toggle the lever
 		s.Level.levers[0].toggle = !s.Level.levers[0].toggle
-		s.Collisions.printAllItems()
+		// s.Collisions.printAllItems()
 	}
 	for i := range s.Level.toggleFloors {
 		log.Printf("toggle floor %v: %v", i, s.Level.toggleFloors[i].Solid())
+	}
+	for i := range s.Collisions.items {
+		i := i
+		log.Printf("item: %v\n", s.Collisions.items[i])
 	}
 }
