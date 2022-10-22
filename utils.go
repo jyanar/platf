@@ -2,7 +2,11 @@ package main
 
 import (
 	"fmt"
+	"image/color"
 	"math"
+
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 func typeof(v interface{}) string {
@@ -14,6 +18,14 @@ func sign(x float64) float64 {
 		return -1.0
 	} else {
 		return 1.0
+	}
+}
+
+func drawGrid(screen *ebiten.Image) {
+	for i := 0; i < WINDOWSIZE; i += 16 {
+		for j := 0; j < WINDOWSIZE; j += 16 {
+			ebitenutil.DrawRect(screen, float64(i), float64(j), 1, 1, color.White)
+		}
 	}
 }
 

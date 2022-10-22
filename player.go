@@ -132,6 +132,6 @@ func moveToward(start, stop, step float64) float64 {
 
 func (p Player) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(p.x, p.y)
+	op.GeoM.Translate(p.x-4, p.y)
 	screen.DrawImage(graphics.Player, op)
 }
