@@ -2,12 +2,14 @@ package graphics
 
 import (
 	"image"
+	"log"
 	"os"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 var Atlas *ebiten.Image
+var Quads []*ebiten.Image
 
 // In the atlas, numbers are left -> right
 var Tile *ebiten.Image        // 0
@@ -23,57 +25,21 @@ var Enemy *ebiten.Image       // 20
 func Load() error {
 	var err error
 
-	// load the texture atlas
-	Atlas, err = getEbitenImage("atlas.png")
+	Quads, err = parseAtlas("atlas.png", 16, 16)
 	if err != nil {
 		return err
 	}
 
-	// pull subimages for all tiles out of the atlas
-	Tile, err = getEbitenSubImageAt(Atlas, 0, 0, 16, 16)
-	if err != nil {
-		return err
-	}
+	Tile = Quads[0]
+	ToggleFloor = Quads[1]
+	Empty = Quads[2]
+	Symbol = Quads[3]
+	Spikes = Quads[4]
 
-	ToggleFloor, err = getEbitenSubImageAt(Atlas, 16, 0, 16, 16)
-	if err != nil {
-		return err
-	}
-
-	Empty, err = getEbitenSubImageAt(Atlas, 32, 0, 16, 16)
-	if err != nil {
-		return err
-	}
-
-	Symbol, err = getEbitenSubImageAt(Atlas, 48, 0, 16, 16)
-	if err != nil {
-		return err
-	}
-
-	Spikes, err = getEbitenSubImageAt(Atlas, 0, 16, 16, 16)
-	if err != nil {
-		return err
-	}
-
-	LeverOff, err = getEbitenSubImageAt(Atlas, 16, 16, 16, 16)
-	if err != nil {
-		return err
-	}
-
-	LeverOn, err = getEbitenSubImageAt(Atlas, 32, 16, 16, 16)
-	if err != nil {
-		return err
-	}
-
-	Player, err = getEbitenSubImageAt(Atlas, 32, 32, 16, 16)
-	if err != nil {
-		return err
-	}
-
-	Enemy, err = getEbitenSubImageAt(Atlas, 80, 0, 16, 16)
-	if err != nil {
-		return err
-	}
+	LeverOff = Quads[5]
+	LeverOn = Quads[6]
+	Player = Quads[8]
+	Enemy = Quads[21]
 
 	return nil
 }
@@ -97,6 +63,31 @@ func getEbitenImage(filepath string) (*ebiten.Image, error) {
 	return ebiten.NewImageFromImage(img), nil
 }
 
-func getEbitenSubImageAt(atlas *ebiten.Image, x, y, width, height int) (*ebiten.Image, error) {
-	return atlas.SubImage(image.Rect(x, y, x+width, y+height)).(*ebiten.Image), nil
+func parseAtlas(filepath string, quadWidth, quadHeight int) ([]*ebiten.Image, error) {
+	Quads = []*ebiten.Image{}
+	var err error
+	Atlas, err = getEbitenImage(filepath)
+	if err != nil {
+		return nil, err
+		// log.Println(err)
+	}
+
+	atlasWidth, atlasHeight := Atlas.Size()
+	ncol, nrow := atlasWidth/quadWidth, atlasHeight/quadHeight
+	log.Printf("ATLASWIDTH: %v, ATLASHEIGHT: %v", atlasWidth, atlasHeight)
+	log.Printf("ncol: %v nrow: %v", ncol, nrow)
+	for irow := 0; irow < nrow; irow++ {
+		for icol := 0; icol < ncol; icol++ {
+			x0 := icol * quadWidth
+			y0 := irow * quadHeight
+			x1 := x0 + quadWidth
+			y1 := y0 + quadHeight
+			Quads = append(Quads, Atlas.SubImage(image.Rect(x0, y0, x1, y1)).(*ebiten.Image))
+		}
+	}
+	return Quads, nil
 }
+
+// func getEbitenSubImageAt(atlas *ebiten.Image, x, y, width, height int) (*ebiten.Image, error) {
+// 	return atlas.SubImage(image.Rect(x, y, x+width, y+height)).(*ebiten.Image), nil
+// }

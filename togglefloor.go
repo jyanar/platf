@@ -23,9 +23,9 @@ func (t ToggleFloor) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(t.x, t.y)
 	if t.Solid() {
-		screen.DrawImage(graphics.ToggleFloor, op)
+		screen.DrawImage(graphics.Quads[1], op)
 	} else {
-		screen.DrawImage(graphics.Empty, op)
+		screen.DrawImage(graphics.Quads[2], op)
 	}
 }
 

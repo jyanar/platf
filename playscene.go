@@ -52,7 +52,7 @@ func (s *PlayScene) Draw(screen *ebiten.Image) {
 	s.Level.Draw(screen)
 	s.Player.Draw(screen)
 	ebitenutil.DebugPrint(screen, fmt.Sprintf("TPS: %0.2f\nFPS: %0.2f", ebiten.ActualTPS(), ebiten.ActualFPS()))
-	drawGrid(screen)
+	// drawGrid(screen)
 	// ebitenutil.DrawRect(screen, s.Player.x, s.Player.y, s.Player.w, s.Player.h, color.White)
 }
 

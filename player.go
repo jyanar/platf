@@ -12,10 +12,8 @@ type Player struct {
 	Obj
 	*Collisions
 	velocity Vector
-	// vx    float64
-	// vy    float64
-	speed float64
-	alive bool
+	speed    float64
+	alive    bool
 }
 
 func NewPlayer(obj Obj, c *Collisions) *Player {
