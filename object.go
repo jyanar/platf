@@ -4,7 +4,7 @@ import "github.com/hajimehoshi/ebiten/v2"
 
 type Obj struct {
 	x, y, w, h float64
-	isSolid bool
+	isSolid    bool
 }
 
 type PositionalObject interface {
