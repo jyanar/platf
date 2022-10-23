@@ -10,6 +10,7 @@ type ToggleFloor struct {
 }
 
 func NewToggleFloor(obj Obj) *ToggleFloor {
+	obj.isSolid = false
 	return &ToggleFloor{obj}
 }
 

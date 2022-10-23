@@ -1,6 +1,11 @@
 package main
 
-import "github.com/hajimehoshi/ebiten/v2"
+import (
+	"image/color"
+
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+)
 
 type Obj struct {
 	x, y, w, h float64
@@ -32,4 +37,6 @@ func (o Obj) Solid() bool {
 
 func (o Obj) Update(state *GameState) error { return nil }
 
-func (o Obj) Draw(screen *ebiten.Image) {}
+func (o Obj) Draw(screen *ebiten.Image) {
+	ebitenutil.DrawRect(screen, o.x, o.y, o.w, o.h, color.White)
+}

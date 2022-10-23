@@ -9,18 +9,10 @@ import (
 )
 
 type PlayScene struct {
-	levelNum int
-	Collisions
 	Player
 	Level
-}
-
-func NewPlayScene(w Collisions, p Player, l Level) *PlayScene {
-	s := &PlayScene{}
-	s.Collisions = w
-	s.Player = p
-	s.Level = l
-	return s
+	Collisions
+	levelNum int
 }
 
 func (s *PlayScene) init() {
@@ -39,6 +31,8 @@ func (s *PlayScene) Update(state *GameState) error {
 	}
 	// Update collisions
 	s.Player.Update(state)
+	// Update environment
+	s.Level.Update(state)
 	// Check player status
 	groundedObj := s.Player.NewGroundedObj()
 	for i := range s.Level.spikes {

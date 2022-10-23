@@ -13,6 +13,7 @@ type Level struct {
 	levers       []*Lever
 	spikes       []*Spikes
 	portals      []*Portal
+	enemies      []*Enemy
 	toggleFloors []*ToggleFloor
 }
 
@@ -22,10 +23,12 @@ func (l *Level) init(width int, data []int, col *Collisions, player *Player) {
 	l.tiles = []*Tile{}
 	l.levers = []*Lever{}
 	l.spikes = []*Spikes{}
-	l.toggleFloors = []*ToggleFloor{}
+	l.enemies = []*Enemy{}
 	l.portals = []*Portal{}
+	l.toggleFloors = []*ToggleFloor{}
 	for i := 0; i < len(l.data); i++ {
-		x, y := float64((i%l.width)*TILESIZE), math.Floor(float64(i)/float64(l.width))*TILESIZE
+		x := float64((i % l.width) * TILESIZE)
+		y := math.Floor(float64(i)/float64(l.width)) * TILESIZE
 		obj := Obj{x: x, y: y, w: float64(TILESIZE), h: float64(TILESIZE), isSolid: true}
 		switch TILETYPES[l.data[i]] {
 		case "Tile":
@@ -48,6 +51,10 @@ func (l *Level) init(width int, data []int, col *Collisions, player *Player) {
 		case "Portal":
 			l.portals = append(l.portals, NewPortal(obj))
 
+		case "Enemy":
+			l.enemies = append(l.enemies, NewEnemy(obj, col))
+			col.add(&l.enemies[len(l.enemies)-1].Obj)
+
 		case "Player":
 			// Since player is already intialized (in playscene.go), we just shift
 			// his position to whatever's specified in the map
@@ -56,6 +63,16 @@ func (l *Level) init(width int, data []int, col *Collisions, player *Player) {
 			player.Obj = obj
 		}
 	}
+}
+
+func (l *Level) Update(state *GameState) error {
+	for i := range l.enemies {
+		err := l.enemies[i].Update(state)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (l Level) Draw(screen *ebiten.Image) {
@@ -71,7 +88,10 @@ func (l Level) Draw(screen *ebiten.Image) {
 	for i := range l.levers {
 		l.levers[i].Draw(screen)
 	}
-	for i := range l.levers {
+	for i := range l.portals {
 		l.portals[i].Draw(screen)
+	}
+	for i := range l.enemies {
+		l.enemies[i].Draw(screen)
 	}
 }

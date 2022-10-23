@@ -9,9 +9,9 @@ const (
 
 const (
 	GRAVITY        = 8
-	JUMP_SPEED     = -12
+	JUMP_SPEED     = -10
 	MAX_SPEED      = 20
-	ACCELERATION   = 100
+	ACCELERATION   = 10
 	MAX_FALL_SPEED = 25
 	FRICTION       = 6
 )
@@ -21,6 +21,7 @@ var TILETYPES = map[int]string{
 	2: "ToggleFloor",
 	5: "Spikes",
 	6: "Lever",
+	7: "Enemy",
 	8: "Portal",
 	9: "Player",
 }

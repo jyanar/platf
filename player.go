@@ -12,11 +12,11 @@ type Player struct {
 	Obj
 	*Collisions
 	velocity Vector
-	speed    float64
-	alive    bool
-	lastdir  int
-	anim     string
-	anims    map[string]*graphics.Animation
+	// speed    float64
+	alive   bool
+	lastdir int
+	anim    string
+	anims   map[string]*graphics.Animation
 }
 
 func NewPlayer(obj Obj, col *Collisions) *Player {
@@ -24,11 +24,11 @@ func NewPlayer(obj Obj, col *Collisions) *Player {
 		Obj:        obj,
 		Collisions: col,
 		velocity:   Vector{0, 0},
-		speed:      220,
-		alive:      true,
-		lastdir:    1,
-		anim:       "idle",
-		anims:      make(map[string]*graphics.Animation),
+		// speed:      220,
+		alive:   true,
+		lastdir: 1,
+		anim:    "idle",
+		anims:   make(map[string]*graphics.Animation),
 	}
 	player.anims["idle"] = graphics.NewAnimation(8, 3, 0.5)
 	player.anims["run"] = graphics.NewAnimation(12, 7, 0.6)
@@ -129,6 +129,4 @@ func (p Player) Draw(screen *ebiten.Image) {
 		op.GeoM.Translate(p.x-4, p.y)
 	}
 	screen.DrawImage(graphics.Quads[p.anims[p.anim].GetFrame()], op)
-	// p.anim.Draw(screen)
-	// screen.DrawImage(graphics.Player, op)
 }

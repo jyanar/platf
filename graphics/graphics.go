@@ -59,7 +59,7 @@ func NewAnimation(start, len int, duration float64) *Animation {
 	}
 }
 
-func (a *Animation) Init(start int, len int, duration float64) {
+func (a *Animation) init(start int, len int, duration float64) {
 	a.t = 0
 	a.start = start
 	a.len = len

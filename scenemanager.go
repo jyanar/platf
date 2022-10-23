@@ -2,55 +2,6 @@ package main
 
 import "github.com/hajimehoshi/ebiten/v2"
 
-// Alright, so this is how it works. We have a:
-// - SceneManager (struct)
-// - Scene (interface)
-// - GameState (struct)
-//
-// The SceneManager stores the current scene, and calls the update and draw
-// functions on it. In turn, any given scene that we implement (which satisfies
-// the Scene interface) needs to implement those Draw() and Update() methods.
-// Note that the Scene interface is defined as such:
-//
-// 		type Scene interface {
-//			Update(state *GameState) error
-//			Draw(screen *ebiten.Image)
-//      }
-//
-// GameState, which is also a struct, merely carries a pointer to the SceneManager.
-// In this way, individual Scenes (such as PlayScene, GameScene, etc) can reach the
-// SceneManager.
-//
-// For instance, in ebiten's examples/blocks/gamepadscene.go, we have the following
-// Update() method:
-//
-// 		func (s *GamePadScene) Update(state *GameState) error {
-//			...
-//			if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-//				...
-//				state.SceneManager.GoTo(&TitleScene{})
-//				return nil
-//			}
-//			...
-//		}
-//
-// In this way, code within GamePadScene can call functions in SceneManager.
-// However, do we even need GameState? Can't we just do something like
-//
-//		type Scene interface {
-//			Update(sm *SceneManager) error
-//			Draw(screen *ebiten.Image)
-//		}
-//
-//		func (sm *SceneManager) Update() error {
-//			return s.scenes[curidx].Update(sm)
-//		}
-//
-// Yes, we could. But, in ebiten examples GameState also has a pointer to
-// an Input struct. This means we can pass that input directly into the the
-// scene. That way Input code can be in one place, instead of being replicated
-// across a ton of different files.
-
 type Scene interface {
 	init()
 	trigger(msg string)
