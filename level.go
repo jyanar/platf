@@ -12,6 +12,7 @@ type Level struct {
 	tiles        []*Tile
 	levers       []*Lever
 	spikes       []*Spikes
+	portals      []*Portal
 	toggleFloors []*ToggleFloor
 }
 
@@ -22,6 +23,7 @@ func (l *Level) init(width int, data []int, col *Collisions, player *Player) {
 	l.levers = []*Lever{}
 	l.spikes = []*Spikes{}
 	l.toggleFloors = []*ToggleFloor{}
+	l.portals = []*Portal{}
 	for i := 0; i < len(l.data); i++ {
 		x, y := float64((i%l.width)*TILESIZE), math.Floor(float64(i)/float64(l.width))*TILESIZE
 		obj := Obj{x: x, y: y, w: float64(TILESIZE), h: float64(TILESIZE), isSolid: true}
@@ -42,6 +44,9 @@ func (l *Level) init(width int, data []int, col *Collisions, player *Player) {
 		case "ToggleFloor":
 			l.toggleFloors = append(l.toggleFloors, NewToggleFloor(obj))
 			col.add(&l.toggleFloors[len(l.toggleFloors)-1].Obj)
+
+		case "Portal":
+			l.portals = append(l.portals, NewPortal(obj))
 
 		case "Player":
 			// Since player is already intialized (in playscene.go), we just shift
@@ -65,5 +70,8 @@ func (l Level) Draw(screen *ebiten.Image) {
 	}
 	for i := range l.levers {
 		l.levers[i].Draw(screen)
+	}
+	for i := range l.levers {
+		l.portals[i].Draw(screen)
 	}
 }

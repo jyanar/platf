@@ -9,6 +9,7 @@ import (
 )
 
 type PlayScene struct {
+	levelNum int
 	Collisions
 	Player
 	Level
@@ -23,9 +24,12 @@ func NewPlayScene(w Collisions, p Player, l Level) *PlayScene {
 }
 
 func (s *PlayScene) init() {
+	if s.levelNum == 0 {
+		s.levelNum = 1
+	}
 	s.Collisions.init()
 	s.Player = *NewPlayer(Obj{}, &s.Collisions)
-	s.Level.init(16, map2, &s.Collisions, &s.Player)
+	s.Level.init(16, maps[s.levelNum], &s.Collisions, &s.Player)
 }
 
 func (s *PlayScene) Update(state *GameState) error {
@@ -40,6 +44,13 @@ func (s *PlayScene) Update(state *GameState) error {
 	for i := range s.Level.spikes {
 		if s.Collisions.areOverlapping(groundedObj, &s.Level.spikes[i].Obj) {
 			s.Player.alive = false
+		}
+	}
+	// Check if player has touched portal
+	for i := range s.Level.portals {
+		if s.Collisions.areOverlapping(&s.Player.Obj, &s.Level.portals[i].Obj) {
+			s.levelNum += 1
+			s.init()
 		}
 	}
 	if !s.Player.alive {

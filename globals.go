@@ -21,5 +21,6 @@ var TILETYPES = map[int]string{
 	2: "ToggleFloor",
 	5: "Spikes",
 	6: "Lever",
+	8: "Portal",
 	9: "Player",
 }

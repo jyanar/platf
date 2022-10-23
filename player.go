@@ -120,25 +120,6 @@ func (p *Player) Update(state *GameState) error {
 	return nil
 }
 
-func moveToward(start, stop, step float64) float64 {
-	switch {
-	case start < stop:
-		if start+step >= stop {
-			return stop
-		}
-		return start + step
-
-	case start > stop:
-		if start-step <= stop {
-			return stop
-		}
-		return start - step
-
-	default:
-		return stop
-	}
-}
-
 func (p Player) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	if p.lastdir == -1 {

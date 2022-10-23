@@ -15,7 +15,7 @@ var Quads []*ebiten.Image
 var Tile *ebiten.Image        // 0
 var ToggleFloor *ebiten.Image // 1
 var Empty *ebiten.Image       // 2
-var Symbol *ebiten.Image      // 3
+var Portal *ebiten.Image      // 3
 var Spikes *ebiten.Image      // 4
 var LeverOff *ebiten.Image    // 5
 var LeverOn *ebiten.Image     // 6
@@ -33,7 +33,7 @@ func Load() error {
 	Tile = Quads[0]
 	ToggleFloor = Quads[1]
 	Empty = Quads[2]
-	Symbol = Quads[3]
+	Portal = Quads[3]
 	Spikes = Quads[4]
 	LeverOff = Quads[5]
 	LeverOn = Quads[6]
