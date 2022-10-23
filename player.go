@@ -14,6 +14,7 @@ type Player struct {
 	velocity Vector
 	speed    float64
 	alive    bool
+	anim     graphics.Animation
 }
 
 func NewPlayer(obj Obj, c *Collisions) *Player {
@@ -70,6 +71,9 @@ func (p Player) Solid() bool {
 }
 
 func (p *Player) Update(state *GameState) error {
+	// Update animation
+	p.anim.Update()
+
 	// Take in input
 	dt := 0.1
 	if ebiten.IsKeyPressed(ebiten.KeyArrowUp) && p.isGrounded() {
@@ -131,5 +135,7 @@ func moveToward(start, stop, step float64) float64 {
 func (p Player) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(p.x-4, p.y)
-	screen.DrawImage(graphics.Player, op)
+	screen.DrawImage(graphics.Quads[p.anim.GetFrame()], op)
+	// p.anim.Draw(screen)
+	// screen.DrawImage(graphics.Player, op)
 }

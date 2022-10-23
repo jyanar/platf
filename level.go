@@ -52,6 +52,19 @@ func (l *Level) init(width int, data []int, c *Collisions, player *Player) {
 			player.velocity = Vector{0, 0}
 			player.speed = 220
 			player.alive = true
+			player.anim.Init(9, 2, 0.5)
+			// player.anim.t = 0
+			// player.anim.start = 9
+			// player.anim.len = 3
+			// player.anim.duration = 0.5
+			// 	t:        0,
+			// 	start:    9,
+			// 	len:      3,
+			// 	duration: 0.5,
+			// }
+			// player.anim = *graphics.NewAnimation()
+			// player.anim.t = 0
+			// player.anim.start
 			c.add(&player.Obj)
 		}
 	}

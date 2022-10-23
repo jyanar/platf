@@ -3,6 +3,7 @@ package graphics
 import (
 	"image"
 	"log"
+	"math"
 	"os"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -35,7 +36,6 @@ func Load() error {
 	Empty = Quads[2]
 	Symbol = Quads[3]
 	Spikes = Quads[4]
-
 	LeverOff = Quads[5]
 	LeverOn = Quads[6]
 	Player = Quads[8]
@@ -43,6 +43,38 @@ func Load() error {
 
 	return nil
 }
+
+type Animation struct {
+	t        float64
+	start    int
+	len      int
+	duration float64
+}
+
+func NewAnimation() *Animation {
+	return &Animation{}
+}
+
+func (a *Animation) Init(start int, len int, duration float64) {
+	a.t = 0
+	a.start = start
+	a.len = len
+	a.duration = duration
+}
+
+func (a *Animation) Update() {
+	// Assuming dt is 1/60 seconds
+	log.Printf("ANIMATION, t: %v", a.t)
+	a.t += 1.0 / 60.0
+}
+
+func (a Animation) GetFrame() int {
+	return a.start + int(math.Floor(float64(a.len) * math.Mod(a.t, a.duration) / a.duration))
+}
+
+// func (a Animation) Draw(screen *ebiten.Image) {
+// 	screen.DrawImage(Quads[a.GetFrame()])
+// }
 
 // https://stackoverflow.com/questions/49594259/reading-image-in-go
 func getImageFromFilePath(filePath string) (image.Image, error) {
@@ -74,8 +106,6 @@ func parseAtlas(filepath string, quadWidth, quadHeight int) ([]*ebiten.Image, er
 
 	atlasWidth, atlasHeight := Atlas.Size()
 	ncol, nrow := atlasWidth/quadWidth, atlasHeight/quadHeight
-	log.Printf("ATLASWIDTH: %v, ATLASHEIGHT: %v", atlasWidth, atlasHeight)
-	log.Printf("ncol: %v nrow: %v", ncol, nrow)
 	for irow := 0; irow < nrow; irow++ {
 		for icol := 0; icol < ncol; icol++ {
 			x0 := icol * quadWidth
