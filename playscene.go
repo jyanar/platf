@@ -23,8 +23,8 @@ func NewPlayScene(w Collisions, p Player, l Level) *PlayScene {
 }
 
 func (s *PlayScene) init() {
-	s.Player = Player{}
 	s.Collisions.init()
+	s.Player = *NewPlayer(Obj{}, &s.Collisions)
 	s.Level.init(16, map2, &s.Collisions, &s.Player)
 }
 

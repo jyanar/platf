@@ -1,9 +1,10 @@
 package main
 
 const (
-	DT         = 1.0 / 60.0
-	WINDOWSIZE = 256
-	TILESIZE   = 16
+	DT          = 1.0 / 60.0
+	WINDOWSIZE  = 256
+	WINDOWSCALE = 3
+	TILESIZE    = 16
 )
 
 const (

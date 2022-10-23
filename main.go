@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	ebiten.SetWindowSize(WINDOWSIZE*2, WINDOWSIZE*2)
+	ebiten.SetWindowSize(WINDOWSIZE*WINDOWSCALE, WINDOWSIZE*WINDOWSCALE)
 	ebiten.SetWindowTitle("platf")
 	sm := &SceneManager{}
 	sm.push(&PlayScene{})

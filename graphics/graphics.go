@@ -2,7 +2,6 @@ package graphics
 
 import (
 	"image"
-	"log"
 	"math"
 	"os"
 
@@ -51,8 +50,13 @@ type Animation struct {
 	duration float64
 }
 
-func NewAnimation() *Animation {
-	return &Animation{}
+func NewAnimation(start, len int, duration float64) *Animation {
+	return &Animation{
+		t:        0,
+		start:    start,
+		len:      len,
+		duration: duration,
+	}
 }
 
 func (a *Animation) Init(start int, len int, duration float64) {
@@ -64,12 +68,11 @@ func (a *Animation) Init(start int, len int, duration float64) {
 
 func (a *Animation) Update() {
 	// Assuming dt is 1/60 seconds
-	log.Printf("ANIMATION, t: %v", a.t)
 	a.t += 1.0 / 60.0
 }
 
 func (a Animation) GetFrame() int {
-	return a.start + int(math.Floor(float64(a.len) * math.Mod(a.t, a.duration) / a.duration))
+	return a.start + int(math.Floor(float64(a.len)*math.Mod(a.t, a.duration)/a.duration))
 }
 
 // func (a Animation) Draw(screen *ebiten.Image) {

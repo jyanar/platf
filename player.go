@@ -14,17 +14,26 @@ type Player struct {
 	velocity Vector
 	speed    float64
 	alive    bool
-	anim     graphics.Animation
+	lastdir  int
+	anim     string
+	anims    map[string]*graphics.Animation
 }
 
-func NewPlayer(obj Obj, c *Collisions) *Player {
-	return &Player{
+func NewPlayer(obj Obj, col *Collisions) *Player {
+	player := Player{
 		Obj:        obj,
-		Collisions: c,
+		Collisions: col,
 		velocity:   Vector{0, 0},
 		speed:      220,
 		alive:      true,
+		lastdir:    1,
+		anim:       "idle",
+		anims:      make(map[string]*graphics.Animation),
 	}
+	player.anims["idle"] = graphics.NewAnimation(8, 3, 0.5)
+	player.anims["run"] = graphics.NewAnimation(12, 7, 0.6)
+	player.anims["jump"] = graphics.NewAnimation(12, 3, 0.2)
+	return &player
 }
 
 func (p Player) NewGroundedObj() *Obj {
@@ -34,16 +43,6 @@ func (p Player) NewGroundedObj() *Obj {
 func (p Player) NewHittingCeilingObj() *Obj {
 	return &Obj{p.x, p.y - 1, p.w, 1, true}
 }
-
-// func (p *Player) init(obj Obj, w *Collisions, vy float64, speed float64, alive bool) *Player {
-// 	return &Player{
-// 		Obj:   obj,
-// 		collisions: w,
-// 		vy:    0,
-// 		speed: 220,
-// 		alive: true,
-// 	}
-// }
 
 func (p *Player) setPosition(x, y float64) {
 	p.x = x
@@ -71,18 +70,23 @@ func (p Player) Solid() bool {
 }
 
 func (p *Player) Update(state *GameState) error {
-	// Update animation
-	p.anim.Update()
+	// Set default animation to idle
+	p.anim = "idle"
 
 	// Take in input
 	dt := 0.1
 	if ebiten.IsKeyPressed(ebiten.KeyArrowUp) && p.isGrounded() {
+		p.anim = "jump"
 		p.velocity.y = JUMP_SPEED
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
+		p.anim = "run"
+		p.lastdir = -1
 		p.velocity.x -= ACCELERATION
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
+		p.anim = "run"
+		p.lastdir = 1
 		p.velocity.x += ACCELERATION
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyE) {
@@ -110,6 +114,9 @@ func (p *Player) Update(state *GameState) error {
 	} else if p.velocity.x < 0 {
 		p.velocity.x = moveToward(p.velocity.x, 0, FRICTION)
 	}
+
+	// Update animation
+	p.anims[p.anim].Update()
 	return nil
 }
 
@@ -134,8 +141,13 @@ func moveToward(start, stop, step float64) float64 {
 
 func (p Player) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(p.x-4, p.y)
-	screen.DrawImage(graphics.Quads[p.anim.GetFrame()], op)
+	if p.lastdir == -1 {
+		op.GeoM.Scale(-1, 1)
+		op.GeoM.Translate(p.x+16-4, p.y)
+	} else {
+		op.GeoM.Translate(p.x-4, p.y)
+	}
+	screen.DrawImage(graphics.Quads[p.anims[p.anim].GetFrame()], op)
 	// p.anim.Draw(screen)
 	// screen.DrawImage(graphics.Player, op)
 }
