@@ -24,11 +24,10 @@ func NewPlayer(obj Obj, col *Collisions) *Player {
 		Obj:        obj,
 		Collisions: col,
 		velocity:   Vector{0, 0},
-		// speed:      220,
-		alive:   true,
-		lastdir: 1,
-		anim:    "idle",
-		anims:   make(map[string]*graphics.Animation),
+		alive:      true,
+		lastdir:    1,
+		anim:       "idle",
+		anims:      make(map[string]*graphics.Animation),
 	}
 	player.anims["idle"] = graphics.NewAnimation(8, 3, 0.5)
 	player.anims["run"] = graphics.NewAnimation(12, 7, 0.6)

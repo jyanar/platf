@@ -10,8 +10,8 @@ const (
 const (
 	GRAVITY        = 8
 	JUMP_SPEED     = -10
-	MAX_SPEED      = 20
-	ACCELERATION   = 10
+	MAX_SPEED      = 30
+	ACCELERATION   = 20
 	MAX_FALL_SPEED = 25
 	FRICTION       = 6
 )
