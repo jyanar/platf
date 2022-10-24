@@ -47,6 +47,12 @@ func (s *PlayScene) Update(state *GameState) error {
 			s.init()
 		}
 	}
+	// Check if player has touched enemy
+	for i := range s.Level.enemies {
+		if s.Collisions.areOverlapping(&s.Player.Obj, &s.Level.enemies[i].Obj) {
+			s.Player.alive = false
+		}
+	}
 	if !s.Player.alive {
 		state.SceneManager.push(&DeadScene{})
 	}

@@ -12,11 +12,10 @@ type Player struct {
 	Obj
 	*Collisions
 	velocity Vector
-	// speed    float64
-	alive   bool
-	lastdir int
-	anim    string
-	anims   map[string]*graphics.Animation
+	alive    bool
+	lastdir  int
+	anim     string
+	anims    map[string]*graphics.Animation
 }
 
 func NewPlayer(obj Obj, col *Collisions) *Player {
@@ -74,7 +73,7 @@ func (p *Player) Update(state *GameState) error {
 
 	// Take in input
 	dt := 0.1
-	if ebiten.IsKeyPressed(ebiten.KeyArrowUp) && p.isGrounded() {
+	if inpututil.IsKeyJustPressed(ebiten.KeyArrowUp) && p.isGrounded() {
 		p.anim = "jump"
 		p.velocity.y = JUMP_SPEED
 	}
