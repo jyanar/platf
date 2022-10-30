@@ -58,7 +58,7 @@ func add(a, b Vector) Vector {
 	return Vector{a.x + b.x, a.y + b.y}
 }
 
-func subtract(a, b Vector) Vector {
+func sub(a, b Vector) Vector {
 	return Vector{a.x - b.x, a.y - b.y}
 }
 

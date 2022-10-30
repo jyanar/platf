@@ -6,21 +6,21 @@ import (
 )
 
 type Tile struct {
-	Obj
+	Object
 }
 
-func NewTile(obj Obj) *Tile {
-	return &Tile{obj}
+func NewTile(Object Object) *Tile {
+	return &Tile{Object}
 }
 
 func (t Tile) Solid() bool {
-	return t.Obj.Solid()
+	return t.Object.Solid()
 }
 
 func (t Tile) Update(state *GameState) error { return nil }
 
 func (t Tile) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(t.x, t.y)
+	op.GeoM.Translate(t.position.x, t.position.y)
 	screen.DrawImage(graphics.Tile, op)
 }

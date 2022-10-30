@@ -1,6 +1,7 @@
 package main
 
 import (
+	// "log"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -9,20 +10,18 @@ import (
 )
 
 type Player struct {
-	Obj
+	Object
 	*Collisions
-	velocity Vector
-	alive    bool
-	lastdir  int
-	anim     string
-	anims    map[string]*graphics.Animation
+	alive   bool
+	lastdir int
+	anim    string
+	anims   map[string]*graphics.Animation
 }
 
-func NewPlayer(obj Obj, col *Collisions) *Player {
+func NewPlayer(Object Object, col *Collisions) *Player {
 	player := Player{
-		Obj:        obj,
+		Object:     Object,
 		Collisions: col,
-		velocity:   Vector{0, 0},
 		alive:      true,
 		lastdir:    1,
 		anim:       "idle",
@@ -34,37 +33,52 @@ func NewPlayer(obj Obj, col *Collisions) *Player {
 	return &player
 }
 
-func (p Player) NewGroundedObj() *Obj {
-	return &Obj{p.x, p.y + p.h, p.w, 1, true}
+func (p Player) NewGroundedObject() *Object {
+	return &Object{
+		position: Vector{p.position.x, p.position.y + p.h},
+		w:        p.w,
+		h:        1,
+		isSolid:  true,
+	}
 }
 
-func (p Player) NewHittingCeilingObj() *Obj {
-	return &Obj{p.x, p.y - 1, p.w, 1, true}
+func (p Player) NewHittingCeilingObject() *Object {
+	return &Object{
+		position: Vector{p.position.x, p.position.y - 1},
+		w:        p.w,
+		h:        1,
+		isSolid:  true,
+	}
 }
 
-func (p *Player) setPosition(x, y float64) {
-	p.x = x
-	p.y = y
-}
-
-func (p Player) getPosition() (float64, float64) {
-	return p.x, p.y
-}
-
-func (p Player) getPosAndSize() (float64, float64, float64, float64) {
-	return p.x, p.y, p.w, p.h
+func (p Player) NewSideObject() *Object {
+	if p.lastdir == -1 {
+		return &Object{
+			position: Vector{p.position.x - 1, p.position.y},
+			w:        1,
+			h:        p.h / 2,
+			isSolid:  true,
+		}
+	} else {
+		return &Object{
+			position: Vector{p.position.x + 16, p.position.y},
+			w:        1,
+			h:        p.h / 2,
+			isSolid:  true,
+		}
+	}
 }
 
 func (p Player) isGrounded() bool {
-	return p.Collisions.checkIsColliding(p.NewGroundedObj()) != nil
+	return p.Collisions.checkIsColliding(p.NewGroundedObject()) != nil
 }
 
 func (p Player) isHittingCeiling() bool {
-	return p.Collisions.checkIsColliding(p.NewHittingCeilingObj()) != nil
+	return p.Collisions.checkIsColliding(p.NewHittingCeilingObject()) != nil
 }
 
 func (p Player) Solid() bool {
-	return p.Obj.Solid()
+	return p.Object.isSolid
 }
 
 func (p *Player) Update(state *GameState) error {
@@ -72,7 +86,6 @@ func (p *Player) Update(state *GameState) error {
 	p.anim = "idle"
 
 	// Take in input
-	dt := 0.1
 	if inpututil.IsKeyJustPressed(ebiten.KeyArrowUp) && p.isGrounded() {
 		p.anim = "jump"
 		p.velocity.y = JUMP_SPEED
@@ -95,15 +108,16 @@ func (p *Player) Update(state *GameState) error {
 	if math.Abs(p.velocity.x) > MAX_SPEED {
 		p.velocity.x = sign(p.velocity.x) * MAX_SPEED
 	}
-	p.velocity.y = math.Min(p.velocity.y+GRAVITY*dt, MAX_FALL_SPEED)
+	p.velocity.y = math.Min(p.velocity.y+GRAVITY*DT, MAX_FALL_SPEED)
 
-	p.Collisions.move(&p.Obj, p.x+p.velocity.x*dt, p.y+p.velocity.y)
+	p.Collisions.integrateVelocity(&p.Object)
+	// p.Collisions.move(&p.Object, p.x+p.velocity.x*dt, p.y+p.velocity.y)
 
 	if p.isGrounded() {
 		p.velocity.y = 0
 	}
 	if p.isHittingCeiling() {
-		p.velocity.y = GRAVITY * dt
+		p.velocity.y = GRAVITY * DT
 	}
 
 	// Apply friction
@@ -122,9 +136,11 @@ func (p Player) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	if p.lastdir == -1 {
 		op.GeoM.Scale(-1, 1)
-		op.GeoM.Translate(p.x+16-4, p.y)
+		op.GeoM.Translate(p.position.x+16-4, p.position.y)
 	} else {
-		op.GeoM.Translate(p.x-4, p.y)
+		op.GeoM.Translate(p.position.x-4, p.position.y)
 	}
+	/* log.Printf("Player pos: %v", p.Object) */
 	screen.DrawImage(graphics.Quads[p.anims[p.anim].GetFrame()], op)
+	/* ebitenutil.DrawRect(screen, p.x, p.y, p.w, p.h, color.White) */
 }

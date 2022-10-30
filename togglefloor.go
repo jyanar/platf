@@ -6,23 +6,23 @@ import (
 )
 
 type ToggleFloor struct {
-	Obj
+	Object
 }
 
-func NewToggleFloor(obj Obj) *ToggleFloor {
-	obj.isSolid = false
-	return &ToggleFloor{obj}
+func NewToggleFloor(Object Object) *ToggleFloor {
+	Object.isSolid = false
+	return &ToggleFloor{Object}
 }
 
 func (t ToggleFloor) Solid() bool {
-	return t.Obj.Solid()
+	return t.Object.Solid()
 }
 
 func (t ToggleFloor) Update(state *GameState) error { return nil }
 
 func (t ToggleFloor) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(t.x, t.y)
+	op.GeoM.Translate(t.position.x, t.position.y)
 	if t.Solid() {
 		screen.DrawImage(graphics.Quads[1], op)
 	} else {

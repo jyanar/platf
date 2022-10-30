@@ -2,3 +2,5 @@
 [ ] can jump through bottom of togglefloors, no collision sideways
 [ ] different levers can toggle different togglefloors
 [ ] death animation
+[ ] wall slide
+[ ] wall jump

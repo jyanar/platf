@@ -9,21 +9,19 @@ import (
 )
 
 type Enemy struct {
-	Obj
+	Object
 	*Collisions
-	velocity Vector
-	speed    float64
-	alive    bool
-	dir      int
-	anim     string
-	anims    map[string]*graphics.Animation
+	speed float64
+	alive bool
+	dir   int
+	anim  string
+	anims map[string]*graphics.Animation
 }
 
-func NewEnemy(obj Obj, col *Collisions) *Enemy {
+func NewEnemy(obj Object, col *Collisions) *Enemy {
 	enemy := Enemy{
-		Obj:        obj,
+		Object:     obj,
 		Collisions: col,
-		velocity:   Vector{0, 0},
 		speed:      220,
 		alive:      true,
 		dir:        1,
@@ -35,60 +33,68 @@ func NewEnemy(obj Obj, col *Collisions) *Enemy {
 	return &enemy
 }
 
-func (e Enemy) NewGroundedObj() *Obj {
-	return &Obj{e.x, e.y + e.h, e.w, 1, true}
-}
-
-func (e Enemy) NewHittingCeilingObj() *Obj {
-	return &Obj{e.x, e.y - 1, e.w, 1, true}
-}
-
-func (e Enemy) NewSideObj() *Obj {
-	if e.dir == -1 {
-		return &Obj{e.x - 1, e.y, 1, e.h / 2, true}
-	} else {
-		return &Obj{e.x + 16, e.y, 1, e.h / 2, true}
+func (e Enemy) NewGroundedObject() *Object {
+	return &Object{
+		position: Vector{e.position.x, e.position.y + e.h},
+		velocity: Vector{0, 0},
+		w:        e.w,
+		h:        1,
+		isSolid:  true,
 	}
 }
 
-func (e *Enemy) setPosition(x, y float64) {
-	e.x = x
-	e.y = y
+func (e Enemy) NewHittingCeilingObject() *Object {
+	return &Object{
+		position: Vector{e.position.x, e.position.y - 1},
+		w:        e.w,
+		h:        1,
+		isSolid:  true,
+	}
 }
 
-func (e Enemy) getPosition() (float64, float64) {
-	return e.x, e.y
-}
-
-func (e Enemy) getPosAndSize() (float64, float64, float64, float64) {
-	return e.x, e.y, e.w, e.h
+func (e Enemy) NewSideObject() *Object {
+	if e.dir == -1 {
+		return &Object{
+			position: Vector{e.position.x - 1, e.position.y},
+			w:        1,
+			h:        e.h / 2,
+			isSolid:  true,
+		}
+	} else {
+		return &Object{
+			position: Vector{e.position.x + 16, e.position.y},
+			w:        1,
+			h:        e.h / 2,
+			isSolid:  true,
+		}
+	}
 }
 
 func (e Enemy) isGrounded() bool {
-	return e.Collisions.checkIsColliding(e.NewGroundedObj()) != nil
+	return e.Collisions.checkIsColliding(e.NewGroundedObject()) != nil
 }
 
 func (e Enemy) isHittingCeiling() bool {
-	return e.Collisions.checkIsColliding(e.NewHittingCeilingObj()) != nil
+	return e.Collisions.checkIsColliding(e.NewHittingCeilingObject()) != nil
 }
 
 func (e Enemy) willHitWall() bool {
-	return e.Collisions.checkIsColliding(e.NewSideObj()) != nil
+	return e.Collisions.checkIsColliding(e.NewSideObject()) != nil
 }
 
 func (e Enemy) willFall() bool {
-	grobj := e.NewGroundedObj()
+	grObject := e.NewGroundedObject()
 	if e.dir == -1 {
-		grobj.x -= 16
-		return e.checkIsColliding(grobj) == nil
+		grObject.position.x -= 16
+		return e.checkIsColliding(grObject) == nil
 	} else {
-		grobj.x += 16
-		return e.checkIsColliding(grobj) == nil
+		grObject.position.x += 16
+		return e.checkIsColliding(grObject) == nil
 	}
 }
 
 func (e Enemy) Solid() bool {
-	return e.Obj.Solid()
+	return e.Object.isSolid
 }
 
 func (e *Enemy) Update(state *GameState) error {
@@ -121,7 +127,8 @@ func (e *Enemy) Update(state *GameState) error {
 		e.dir = -1 * e.dir
 	}
 
-	e.Collisions.move(&e.Obj, e.x+e.velocity.x*dt, e.y+e.velocity.y)
+	e.Collisions.integrateVelocity(&e.Object)
+	// e.Collisions.move(&e.Object, e.x+e.velocity.x*dt, e.y+e.velocity.y)
 
 	if e.isGrounded() {
 		e.velocity.y = 0
@@ -146,12 +153,12 @@ func (e Enemy) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	if e.dir == -1 {
 		op.GeoM.Scale(-1, 1)
-		op.GeoM.Translate(e.x+16-4, e.y)
+		op.GeoM.Translate(e.position.x+16-4, e.position.y)
 	} else {
-		op.GeoM.Translate(e.x-4, e.y)
+		op.GeoM.Translate(e.position.x-4, e.position.y)
 	}
 	screen.DrawImage(graphics.Quads[e.anims[e.anim].GetFrame()], op)
 	// Debugging collisiosn
-	// e.NewSideObj().Draw(screen)
-	// e.Obj.Draw(screen)
+	// e.NewSideObject().Draw(screen)
+	// e.Object.Draw(screen)
 }

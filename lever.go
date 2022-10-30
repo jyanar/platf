@@ -6,23 +6,23 @@ import (
 )
 
 type Lever struct {
-	Obj
+	Object
 	toggle bool
 }
 
-func NewLever(obj Obj) *Lever {
-	return &Lever{obj, false}
+func NewLever(Object Object) *Lever {
+	return &Lever{Object, false}
 }
 
 func (l Lever) Solid() bool {
-	return l.Obj.Solid()
+	return l.Object.Solid()
 }
 
 func (l Lever) Update(state *GameState) error { return nil }
 
 func (l Lever) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(l.x, l.y)
+	op.GeoM.Translate(l.position.x, l.position.y)
 	if l.toggle {
 		screen.DrawImage(graphics.LeverOn, op)
 	} else {

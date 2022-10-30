@@ -6,25 +6,25 @@ import (
 )
 
 type Spikes struct {
-	Obj
+	Object
 }
 
-func NewSpikes(obj Obj) *Spikes {
-	return &Spikes{obj}
+func NewSpikes(Object Object) *Spikes {
+	return &Spikes{Object}
 }
 
 func (s Spikes) Update(state *GameState) error { return nil }
 
 func (s Spikes) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(s.x, s.y)
+	op.GeoM.Translate(s.position.x, s.position.y)
 	screen.DrawImage(graphics.Tile, op)
 	op.GeoM.Translate(0, -4)
 	screen.DrawImage(graphics.Spikes, op)
 }
 
 func (s Spikes) Solid() bool {
-	return s.Obj.Solid()
+	return s.Object.Solid()
 }
 
 // func (s Spikes) onTouch() {}

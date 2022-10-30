@@ -20,7 +20,7 @@ func (s *PlayScene) init() {
 		s.levelNum = 1
 	}
 	s.Collisions.init()
-	s.Player = *NewPlayer(Obj{}, &s.Collisions)
+	s.Player = *NewPlayer(Object{}, &s.Collisions)
 	s.Level.init(16, maps[s.levelNum], &s.Collisions, &s.Player)
 }
 
@@ -34,22 +34,22 @@ func (s *PlayScene) Update(state *GameState) error {
 	// Update environment
 	s.Level.Update(state)
 	// Check player status
-	groundedObj := s.Player.NewGroundedObj()
+	groundedObject := s.Player.NewGroundedObject()
 	for i := range s.Level.spikes {
-		if s.Collisions.areOverlapping(groundedObj, &s.Level.spikes[i].Obj) {
+		if s.Collisions.areOverlapping(groundedObject, &s.Level.spikes[i].Object) {
 			s.Player.alive = false
 		}
 	}
 	// Check if player has touched portal
 	for i := range s.Level.portals {
-		if s.Collisions.areOverlapping(&s.Player.Obj, &s.Level.portals[i].Obj) {
+		if s.Collisions.areOverlapping(&s.Player.Object, &s.Level.portals[i].Object) {
 			s.levelNum += 1
 			s.init()
 		}
 	}
 	// Check if player has touched enemy
 	for i := range s.Level.enemies {
-		if s.Collisions.areOverlapping(&s.Player.Obj, &s.Level.enemies[i].Obj) {
+		if s.Collisions.areOverlapping(&s.Player.Object, &s.Level.enemies[i].Object) {
 			s.Player.alive = false
 		}
 	}
@@ -74,7 +74,7 @@ func (s *PlayScene) Layout(outsideWidth, outsideHeight int) (screenWidth, screen
 func (s *PlayScene) trigger(msg string) {
 	switch msg {
 	case "player:action":
-		if s.Collisions.areOverlapping(&s.Player.Obj, &s.Level.levers[0].Obj) {
+		if s.Collisions.areOverlapping(&s.Player.Object, &s.Level.levers[0].Object) {
 			for i := range s.Level.toggleFloors {
 				s.Level.toggleFloors[i].toggleSolid()
 			}

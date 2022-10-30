@@ -6,17 +6,17 @@ import (
 )
 
 type Portal struct {
-	Obj
+	Object
 }
 
-func NewPortal(obj Obj) *Portal {
-	return &Portal{obj}
+func NewPortal(Object Object) *Portal {
+	return &Portal{Object}
 }
 
 func (p Portal) Update(state *GameState) error { return nil }
 
 func (p Portal) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(p.x, p.y)
+	op.GeoM.Translate(p.position.x, p.position.y)
 	screen.DrawImage(graphics.Portal, op)
 }
