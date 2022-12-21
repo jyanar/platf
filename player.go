@@ -36,6 +36,7 @@ func NewPlayer(Object Object, col *Collisions) *Player {
 func (p Player) NewGroundedObject() *Object {
 	return &Object{
 		position: Vector{p.position.x, p.position.y + p.h},
+		velocity: p.velocity,
 		w:        p.w,
 		h:        1,
 		isSolid:  true,
@@ -45,6 +46,7 @@ func (p Player) NewGroundedObject() *Object {
 func (p Player) NewHittingCeilingObject() *Object {
 	return &Object{
 		position: Vector{p.position.x, p.position.y - 1},
+		velocity: p.velocity,
 		w:        p.w,
 		h:        1,
 		isSolid:  true,
@@ -55,6 +57,7 @@ func (p Player) NewSideObject() *Object {
 	if p.lastdir == -1 {
 		return &Object{
 			position: Vector{p.position.x - 1, p.position.y},
+			velocity: p.velocity,
 			w:        1,
 			h:        p.h / 2,
 			isSolid:  true,
@@ -62,6 +65,7 @@ func (p Player) NewSideObject() *Object {
 	} else {
 		return &Object{
 			position: Vector{p.position.x + 16, p.position.y},
+			velocity: p.velocity,
 			w:        1,
 			h:        p.h / 2,
 			isSolid:  true,
@@ -70,11 +74,24 @@ func (p Player) NewSideObject() *Object {
 }
 
 func (p Player) isGrounded() bool {
-	return p.Collisions.checkIsColliding(p.NewGroundedObject()) != nil
+	colObj := p.Collisions.checkIsColliding(p.NewGroundedObject())
+	if colObj != nil {
+		if colObj.isPlatform && p.velocity.y < 0 {
+			return false
+		} else {
+			return true
+		}
+	}
+	return false
 }
 
 func (p Player) isHittingCeiling() bool {
-	return p.Collisions.checkIsColliding(p.NewHittingCeilingObject()) != nil
+	colObj := p.Collisions.checkIsColliding(&p.Object)
+	if colObj == nil || colObj.isPlatform {
+		return false
+	} else {
+		return true
+	}
 }
 
 func (p Player) Solid() bool {
@@ -111,7 +128,6 @@ func (p *Player) Update(state *GameState) error {
 	p.velocity.y = math.Min(p.velocity.y+GRAVITY*DT, MAX_FALL_SPEED)
 
 	p.Collisions.integrateVelocity(&p.Object)
-	// p.Collisions.move(&p.Object, p.x+p.velocity.x*dt, p.y+p.velocity.y)
 
 	if p.isGrounded() {
 		p.velocity.y = 0
@@ -136,9 +152,11 @@ func (p Player) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	if p.lastdir == -1 {
 		op.GeoM.Scale(-1, 1)
+		// op.GeoM.Translate(p.position.x, p.position.y)
 		op.GeoM.Translate(p.position.x+16-4, p.position.y)
 	} else {
 		op.GeoM.Translate(p.position.x-4, p.position.y)
+		// op.GeoM.Translate(p.position.x, p.position.y)
 	}
 	/* log.Printf("Player pos: %v", p.Object) */
 	screen.DrawImage(graphics.Quads[p.anims[p.anim].GetFrame()], op)

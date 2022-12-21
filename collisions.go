@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // Collisions is a collection of Objects with positional, velocity,
 // solid, and width/height data
@@ -58,27 +60,61 @@ func (c *Collisions) checkIsColliding(item *Object) (collidingobj *Object) {
 }
 
 func (c *Collisions) integrateVelocity(object *Object) {
+
 	prevX, prevY := object.position.x, object.position.y
+
 	// Integrate velocity in x direction
 	object.position.x = object.position.x + object.velocity.x*DT
 	if colObj := c.checkIsColliding(object); colObj != nil {
-		width, _ := c.computeOverlap(object, colObj)
-		if object.position.x > prevX {
-			object.position.x -= width // object is moving left
-		} else {
-			object.position.x += width // object is moving right
+		// If this is a platform, ignore
+		if !colObj.isPlatform {
+			width, _ := c.computeOverlap(object, colObj)
+			if object.position.x > prevX {
+				object.position.x -= width // object is moving left
+			} else {
+				object.position.x += width // object is moving right
+			}
 		}
 	}
+
 	// Integrate velocity in y direction
+	collisionflag := false
 	object.position.y = object.position.y + object.velocity.y
 	if colObj := c.checkIsColliding(object); colObj != nil {
-		_, height := c.computeOverlap(object, colObj)
-		if object.position.y > prevY {
-			object.position.y -= height // object is moving left
-		} else {
-			object.position.y += height // object is moving right
+		collisionflag = true
+		if colObj.isPlatform && object.velocity.y < 0 {
+			collisionflag = false
+		}
+		if collisionflag {
+			_, height := c.computeOverlap(object, colObj)
+			if object.position.y > prevY {
+				object.position.y -= height
+			} else {
+				object.position.y += height
+			}
 		}
 	}
+
+	// // If this is a platform, ignore if we're jumping
+	// switch {
+	// case object.velocity.y < 0:
+	// 	if !colObj.isPlatform {
+	// 		_, height := c.computeOverlap(object, colObj)
+	// 		if object.position.y > prevY {
+	// 			object.position.y -= height // object is moving left
+	// 		} else {
+	// 			object.position.y += height // object is moving right
+	// 		}
+	// 	}
+	// case object.velocity.y > 0: // falling
+	// 	_, height := c.computeOverlap(object, colObj)
+	// 	if object.position.y > prevY {
+	// 		object.position.y -= height // object is moving left
+	// 	} else {
+	// 		object.position.y += height // object is moving right
+	// 	}
+	// }
+	// }
 }
 
 func (c *Collisions) move(object *Object, newX float64, newY float64) {

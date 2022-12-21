@@ -30,10 +30,11 @@ func (l *Level) init(width int, data []int, col *Collisions, player *Player) {
 		x := float64((i % l.width) * TILESIZE)
 		y := math.Floor(float64(i)/float64(l.width)) * TILESIZE
 		obj := Object{
-			position: Vector{x, y},
-			w:        float64(TILESIZE),
-			h:        float64(TILESIZE),
-			isSolid:  true,
+			position:   Vector{x, y},
+			w:          float64(TILESIZE),
+			h:          float64(TILESIZE),
+			isSolid:    true,
+			isPlatform: false,
 		}
 		switch TILETYPES[l.data[i]] {
 		case "Tile":
@@ -50,6 +51,7 @@ func (l *Level) init(width int, data []int, col *Collisions, player *Player) {
 			col.add(&l.spikes[len(l.spikes)-1].Object)
 
 		case "ToggleFloor":
+			obj.isPlatform = true
 			l.toggleFloors = append(l.toggleFloors, NewToggleFloor(obj))
 			col.add(&l.toggleFloors[len(l.toggleFloors)-1].Object)
 
